@@ -10,7 +10,7 @@
 /dataSources.local.xml
 
 Maven build output
-target/
+/target/
 
 # Gradle build output
 build/

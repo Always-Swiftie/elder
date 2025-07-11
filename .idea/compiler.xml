@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="zzyl-generator" />
+        <module name="zzyl-system" />
+        <module name="zzyl-framework" />
+        <module name="zzyl-admin" />
+        <module name="zzyl-common" />
+        <module name="zzyl-quartz" />
+        <module name="zzyl-nursing-platform" />
+        <module name="zzyl-oss" />
+      </profile>
+    </annotationProcessing>
+  </component>
+</project>

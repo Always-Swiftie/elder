@@ -127,3 +127,9 @@ xss:
   excludes: /system/notice
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
+
+oss:
+  endpoint: oss-cn-beijing.aliyuncs.com
+  accessKeyId: LTAI5t8q61jDnc9eHoThS899
+  accessKeySecret: xjYVlmSzVNNw5cF0ucXshD88SwaTwH
+  bucketName: zzyl-anthony

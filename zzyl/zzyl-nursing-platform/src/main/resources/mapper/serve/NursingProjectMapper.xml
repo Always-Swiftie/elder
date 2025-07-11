@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zzyl.nursing.mapper.NursingProjectMapper">
-
+    
     <resultMap type="NursingProject" id="NursingProjectResult">
         <result property="id"    column="id"    />
         <result property="name"    column="name"    />
@@ -26,12 +26,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectNursingProjectList" parameterType="NursingProject" resultMap="NursingProjectResult">
         <include refid="selectNursingProjectVo"/>
-        <where>
+        <where>  
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
             <if test="status != null "> and status = #{status}</if>
         </where>
     </select>
-
+    
     <select id="selectNursingProjectById" parameterType="Long" resultMap="NursingProjectResult">
         <include refid="selectNursingProjectVo"/>
         where id = #{id}
@@ -52,7 +52,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null">remark,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateTime != null">update_time,</if>
-        </trim>
+         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="name != null">#{name},</if>
             <if test="orderNo != null">#{orderNo},</if>
@@ -66,7 +66,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null">#{remark},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateTime != null">#{updateTime},</if>
-        </trim>
+         </trim>
     </insert>
 
     <update id="updateNursingProject" parameterType="NursingProject">
@@ -93,7 +93,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteNursingProjectByIds" parameterType="String">
-        delete from nursing_project where id in
+        delete from nursing_project where id in 
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

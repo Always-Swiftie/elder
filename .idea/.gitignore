@@ -8,3 +8,19 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+
+Maven build output
+target/
+
+# Gradle build output
+build/
+
+# Compiled class files
+*.class
+
+# Log files
+*.log
+
+# IDE files
+.idea/
+*.iml

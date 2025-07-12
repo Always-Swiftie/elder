@@ -1,9 +1,12 @@
 package com.zzyl.nursing.controller;
 
+import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zzyl.nursing.dto.NursingPlanDto;
+import com.zzyl.nursing.vo.NursingPlanVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -74,7 +77,9 @@ public class NursingPlanController extends BaseController
     @ApiOperation("获取护理计划详细信息")
     public AjaxResult getInfo(@PathVariable("id") Integer id)
     {
-        return success(nursingPlanService.selectNursingPlanById(id));
+        NursingPlanVo nursingPlan = nursingPlanService.selectNursingPlanById(id);
+        logger.info("返回给前端的id:{}", nursingPlan.getId());
+        return success(nursingPlan);
     }
 
     /**
@@ -84,8 +89,9 @@ public class NursingPlanController extends BaseController
     @Log(title = "护理计划", businessType = BusinessType.INSERT)
     @PostMapping
     @ApiOperation("新增护理计划")
-    public AjaxResult add(@RequestBody NursingPlanDto dto)
+        public AjaxResult add(@RequestBody NursingPlanDto dto)
     {
+        logger.info("新增护理计划");
         return toAjax(nursingPlanService.insertNursingPlan(dto));
     }
 
@@ -96,9 +102,10 @@ public class NursingPlanController extends BaseController
     @Log(title = "护理计划", businessType = BusinessType.UPDATE)
     @PutMapping
     @ApiOperation("修改护理计划")
-    public AjaxResult edit(@RequestBody NursingPlan nursingPlan)
+    public AjaxResult edit(@RequestBody NursingPlanDto dto)
     {
-        return toAjax(nursingPlanService.updateNursingPlan(nursingPlan));
+        logger.info("修改护理计划");
+        return toAjax(nursingPlanService.updateNursingPlan(dto));
     }
 
     /**
@@ -110,6 +117,7 @@ public class NursingPlanController extends BaseController
     @ApiOperation("删除护理计划")
     public AjaxResult remove(@PathVariable Integer[] ids)
     {
+        logger.info("批量删除护理计划:{}", Arrays.toString(ids));
         return toAjax(nursingPlanService.deleteNursingPlanByIds(ids));
     }
 }

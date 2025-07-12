@@ -2,6 +2,10 @@ package com.zzyl.nursing.mapper;
 
 import java.util.List;
 import com.zzyl.nursing.domain.NursingProjectPlan;
+import com.zzyl.nursing.dto.NursingProjectPlanDto;
+import com.zzyl.nursing.vo.NursingProjectPlanVo;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -62,5 +66,12 @@ public interface NursingProjectPlanMapper
      */
     public int deleteNursingProjectPlanByIds(Long[] ids);
 
-    int batchInsert(@Param("list") List<NursingProjectPlan> projectPlans, @Param("planId") Integer planId);
+    int batchInsert(@Param("list") List<NursingProjectPlanDto> projectPlans, @Param("planId") Integer planId);
+
+    List<NursingProjectPlanVo> selectByPlanId(Long id);
+
+    @Delete("delete from `ry-zzyl2`.nursing_project_plan where plan_id = #{planId}")
+    void deleteByPlanId(Long planId);
+
+    void deleteByPlanIds(@Param("ids") List<Integer> ids);
 }

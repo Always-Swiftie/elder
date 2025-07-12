@@ -1,15 +1,21 @@
 package com.zzyl.nursing.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
 import com.zzyl.common.utils.DateUtils;
 import com.zzyl.nursing.dto.NursingPlanDto;
 import com.zzyl.nursing.mapper.NursingProjectPlanMapper;
+import com.zzyl.nursing.vo.NursingPlanVo;
+import com.zzyl.nursing.vo.NursingProjectPlanVo;
+import com.zzyl.nursing.vo.NursingProjectVo;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.zzyl.nursing.mapper.NursingPlanMapper;
 import com.zzyl.nursing.domain.NursingPlan;
 import com.zzyl.nursing.service.INursingPlanService;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 护理计划Service业务层处理
@@ -18,6 +24,7 @@ import com.zzyl.nursing.service.INursingPlanService;
  * @date 2025-07-12
  */
 @Service
+@Transactional
 public class NursingPlanServiceImpl implements INursingPlanService 
 {
     @Autowired
@@ -32,9 +39,17 @@ public class NursingPlanServiceImpl implements INursingPlanService
      * @return 护理计划
      */
     @Override
-    public NursingPlan selectNursingPlanById(Integer id)
+    public NursingPlanVo selectNursingPlanById(Integer id)
     {
-        return nursingPlanMapper.selectNursingPlanById(id);
+        //先查询到护理计划
+        NursingPlan nursingPlan = nursingPlanMapper.selectNursingPlanById(id);
+        NursingPlanVo nursingPlanVo = new NursingPlanVo();
+        BeanUtils.copyProperties(nursingPlan,nursingPlanVo);
+        //根据护理计划的id查询其护理项目
+        List<NursingProjectPlanVo> list = nursingProjectPlanMapper.selectByPlanId(Long.valueOf(id));
+        nursingPlanVo.setProjectPlans(list);
+        nursingPlanVo.setId(Long.valueOf(id));
+        return nursingPlanVo;
     }
 
     /**
@@ -72,14 +87,30 @@ public class NursingPlanServiceImpl implements INursingPlanService
     /**
      * 修改护理计划
      * 
-     * @param nursingPlan 护理计划
+     * @param dto
      * @return 结果
      */
     @Override
-    public int updateNursingPlan(NursingPlan nursingPlan)
+    public int updateNursingPlan(NursingPlanDto dto)
     {
-        nursingPlan.setUpdateTime(DateUtils.getNowDate());
-        return nursingPlanMapper.updateNursingPlan(nursingPlan);
+        try {
+            //属性拷贝
+            NursingPlan nursingPlan = new NursingPlan();
+            BeanUtils.copyProperties(dto,nursingPlan);
+            //先判断dto中的项目nursingProject是否为空，如果不为空，则先删除护理计划与护理项目的关系（中间表），再批量添加
+            if(dto.getProjectPlans() != null && dto.getProjectPlans().size() > 0){
+                //删除护理计划与护理项目的关系
+                nursingProjectPlanMapper.deleteByPlanId(dto.getId());
+                //批量添加护理计划与护理项目的关系
+                Integer id = dto.getId().intValue();
+                nursingProjectPlanMapper.batchInsert(dto.getProjectPlans(),id);
+            }
+            //不管项目列表是否为空,都需要修改护理计划
+            nursingPlan.setId(dto.getId().intValue());
+            return nursingPlanMapper.updateNursingPlan(nursingPlan);
+        }catch (BeansException e){
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -91,7 +122,14 @@ public class NursingPlanServiceImpl implements INursingPlanService
     @Override
     public int deleteNursingPlanByIds(Integer[] ids)
     {
-        return nursingPlanMapper.deleteNursingPlanByIds(ids);
+        try {
+            //批量删除中间表中信息
+            List<Integer> idList = Arrays.asList(ids);
+            nursingProjectPlanMapper.deleteByPlanIds(idList);
+            return nursingPlanMapper.deleteNursingPlanByIds(ids);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

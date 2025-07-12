@@ -2,6 +2,7 @@ package com.zzyl.nursing.mapper;
 
 import java.util.List;
 import com.zzyl.nursing.domain.NursingPlan;
+import com.zzyl.nursing.vo.NursingProjectPlanVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.web.bind.annotation.ModelAttribute;
 

@@ -2,6 +2,9 @@ package com.zzyl.nursing.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +32,7 @@ import com.zzyl.common.core.page.TableDataInfo;
  */
 @RestController
 @RequestMapping("/nursing/nursingPlan")
+@Api(tags = "护理计划接口")
 public class NursingPlanController extends BaseController
 {
     @Autowired
@@ -39,6 +43,7 @@ public class NursingPlanController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('nursing:nursingPlan:list')")
     @GetMapping("/list")
+    @ApiOperation("查询护理计划列表")
     public TableDataInfo list(NursingPlan nursingPlan)
     {
         startPage();
@@ -52,6 +57,7 @@ public class NursingPlanController extends BaseController
     @PreAuthorize("@ss.hasPermi('nursing:nursingPlan:export')")
     @Log(title = "护理计划", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
+    @ApiOperation("导出护理计划列表")
     public void export(HttpServletResponse response, NursingPlan nursingPlan)
     {
         List<NursingPlan> list = nursingPlanService.selectNursingPlanList(nursingPlan);
@@ -64,6 +70,7 @@ public class NursingPlanController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('nursing:nursingPlan:query')")
     @GetMapping(value = "/{id}")
+    @ApiOperation("获取护理计划详细信息")
     public AjaxResult getInfo(@PathVariable("id") Integer id)
     {
         return success(nursingPlanService.selectNursingPlanById(id));
@@ -75,6 +82,7 @@ public class NursingPlanController extends BaseController
     @PreAuthorize("@ss.hasPermi('nursing:nursingPlan:add')")
     @Log(title = "护理计划", businessType = BusinessType.INSERT)
     @PostMapping
+    @ApiOperation("新增护理计划")
     public AjaxResult add(@RequestBody NursingPlan nursingPlan)
     {
         return toAjax(nursingPlanService.insertNursingPlan(nursingPlan));
@@ -86,6 +94,7 @@ public class NursingPlanController extends BaseController
     @PreAuthorize("@ss.hasPermi('nursing:nursingPlan:edit')")
     @Log(title = "护理计划", businessType = BusinessType.UPDATE)
     @PutMapping
+    @ApiOperation("修改护理计划")
     public AjaxResult edit(@RequestBody NursingPlan nursingPlan)
     {
         return toAjax(nursingPlanService.updateNursingPlan(nursingPlan));
@@ -97,6 +106,7 @@ public class NursingPlanController extends BaseController
     @PreAuthorize("@ss.hasPermi('nursing:nursingPlan:remove')")
     @Log(title = "护理计划", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
+    @ApiOperation("删除护理计划")
     public AjaxResult remove(@PathVariable Integer[] ids)
     {
         return toAjax(nursingPlanService.deleteNursingPlanByIds(ids));

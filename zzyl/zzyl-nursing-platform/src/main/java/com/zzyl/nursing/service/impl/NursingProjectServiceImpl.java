@@ -55,6 +55,8 @@ public class NursingProjectServiceImpl implements INursingProjectService
     public int insertNursingProject(NursingProject nursingProject)
     {
         nursingProject.setCreateTime(DateUtils.getNowDate());
+        //手动设置货币单位
+        nursingProject.setUnit("RMB");
         return nursingProjectMapper.insertNursingProject(nursingProject);
     }
 

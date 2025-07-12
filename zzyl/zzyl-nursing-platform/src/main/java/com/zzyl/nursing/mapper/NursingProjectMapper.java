@@ -2,7 +2,9 @@ package com.zzyl.nursing.mapper;
 
 import java.util.List;
 import com.zzyl.nursing.domain.NursingProject;
+import com.zzyl.nursing.vo.NursingProjectVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * 护理项目Mapper接口
@@ -60,4 +62,11 @@ public interface NursingProjectMapper
      * @return 结果
      */
     public int deleteNursingProjectByIds(Long[] ids);
+
+    /**
+     * 查询所有护理项目
+     * @return
+     */
+    @Select("select id value,name label from nursing_project where status = 1 ")
+    List<NursingProjectVo> all();
 }

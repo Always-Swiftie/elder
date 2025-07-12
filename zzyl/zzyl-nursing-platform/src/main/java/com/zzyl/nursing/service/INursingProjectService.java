@@ -2,6 +2,7 @@ package com.zzyl.nursing.service;
 
 import java.util.List;
 import com.zzyl.nursing.domain.NursingProject;
+import com.zzyl.nursing.vo.NursingProjectVo;
 
 /**
  * 护理项目Service接口
@@ -58,4 +59,6 @@ public interface INursingProjectService
      * @return 结果
      */
     public int deleteNursingProjectById(Long id);
+
+    List<NursingProjectVo> listAll();
 }

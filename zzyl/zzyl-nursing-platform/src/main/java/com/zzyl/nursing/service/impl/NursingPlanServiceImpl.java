@@ -2,6 +2,9 @@ package com.zzyl.nursing.service.impl;
 
 import java.util.List;
 import com.zzyl.common.utils.DateUtils;
+import com.zzyl.nursing.dto.NursingPlanDto;
+import com.zzyl.nursing.mapper.NursingProjectPlanMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.zzyl.nursing.mapper.NursingPlanMapper;
@@ -19,6 +22,8 @@ public class NursingPlanServiceImpl implements INursingPlanService
 {
     @Autowired
     private NursingPlanMapper nursingPlanMapper;
+    @Autowired
+    private NursingProjectPlanMapper nursingProjectPlanMapper;
 
     /**
      * 查询护理计划
@@ -47,14 +52,21 @@ public class NursingPlanServiceImpl implements INursingPlanService
     /**
      * 新增护理计划
      * 
-     * @param nursingPlan 护理计划
+     * @param dto 护理计划
      * @return 结果
      */
     @Override
-    public int insertNursingPlan(NursingPlan nursingPlan)
+    public int insertNursingPlan(NursingPlanDto dto)
     {
+        //保存护理计划
+        NursingPlan nursingPlan = new NursingPlan();
+        //属性拷贝:dto -> nursingPlan
+        BeanUtils.copyProperties(dto,nursingPlan);
         nursingPlan.setCreateTime(DateUtils.getNowDate());
-        return nursingPlanMapper.insertNursingPlan(nursingPlan);
+        nursingPlanMapper.insertNursingPlan(nursingPlan);
+        //批量保存护理计划，护理项目的中间表
+        int count = nursingProjectPlanMapper.batchInsert(dto.getProjectPlans(),nursingPlan.getId());
+        return count == 0 ? 0 : 1;
     }
 
     /**

@@ -2,6 +2,8 @@ package com.zzyl.nursing.mapper;
 
 import java.util.List;
 import com.zzyl.nursing.domain.NursingPlan;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 /**
  * 护理计划Mapper接口
@@ -9,6 +11,7 @@ import com.zzyl.nursing.domain.NursingPlan;
  * @author ruoyi
  * @date 2025-07-12
  */
+@Mapper
 public interface NursingPlanMapper 
 {
     /**

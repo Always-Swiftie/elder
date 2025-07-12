@@ -38,6 +38,12 @@ public class NursingProjectController extends BaseController
     @Autowired
     private INursingProjectService nursingProjectService;
 
+    @GetMapping("/all")
+    @ApiOperation("查询所有护理项目")
+    public AjaxResult listAll(){
+        return AjaxResult.success(nursingProjectService.listAll());
+    }
+
     /**
      * 查询护理项目列表
      */

@@ -3,6 +3,7 @@ package com.zzyl.nursing.controller;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.zzyl.nursing.dto.NursingPlanDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -83,9 +84,9 @@ public class NursingPlanController extends BaseController
     @Log(title = "护理计划", businessType = BusinessType.INSERT)
     @PostMapping
     @ApiOperation("新增护理计划")
-    public AjaxResult add(@RequestBody NursingPlan nursingPlan)
+    public AjaxResult add(@RequestBody NursingPlanDto dto)
     {
-        return toAjax(nursingPlanService.insertNursingPlan(nursingPlan));
+        return toAjax(nursingPlanService.insertNursingPlan(dto));
     }
 
     /**

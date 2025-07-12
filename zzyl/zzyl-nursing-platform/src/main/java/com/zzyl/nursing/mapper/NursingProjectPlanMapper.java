@@ -2,6 +2,8 @@ package com.zzyl.nursing.mapper;
 
 import java.util.List;
 import com.zzyl.nursing.domain.NursingProjectPlan;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 护理计划和项目关联Mapper接口
@@ -9,6 +11,7 @@ import com.zzyl.nursing.domain.NursingProjectPlan;
  * @author ruoyi
  * @date 2025-07-12
  */
+@Mapper
 public interface NursingProjectPlanMapper 
 {
     /**
@@ -58,4 +61,6 @@ public interface NursingProjectPlanMapper
      * @return 结果
      */
     public int deleteNursingProjectPlanByIds(Long[] ids);
+
+    int batchInsert(@Param("list") List<NursingProjectPlan> projectPlans, @Param("planId") Integer planId);
 }

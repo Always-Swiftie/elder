@@ -2,6 +2,7 @@ package com.zzyl.nursing.service.impl;
 
 import java.util.List;
 import com.zzyl.common.utils.DateUtils;
+import com.zzyl.nursing.vo.NursingProjectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.zzyl.nursing.mapper.NursingProjectMapper;
@@ -92,5 +93,14 @@ public class NursingProjectServiceImpl implements INursingProjectService
     public int deleteNursingProjectById(Long id)
     {
         return nursingProjectMapper.deleteNursingProjectById(id);
+    }
+
+    /**
+     * 查询所有护理项目
+     * @return
+     */
+    @Override
+    public List<NursingProjectVo> listAll() {
+        return nursingProjectMapper.all();
     }
 }

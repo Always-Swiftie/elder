@@ -2,15 +2,13 @@ package com.zzyl.nursing.mapper;
 
 import java.util.List;
 import com.zzyl.nursing.domain.NursingLevel;
-import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 护理等级Mapper接口
  * 
  * @author ruoyi
- * @date 2025-07-11
+ * @date 2025-07-13
  */
-@Mapper
 public interface NursingLevelMapper 
 {
     /**

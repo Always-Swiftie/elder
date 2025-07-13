@@ -7,7 +7,7 @@ import com.zzyl.nursing.domain.NursingLevel;
  * 护理等级Service接口
  * 
  * @author ruoyi
- * @date 2025-07-11
+ * @date 2025-07-13
  */
 public interface INursingLevelService 
 {

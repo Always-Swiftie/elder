@@ -1,23 +1,25 @@
 package com.zzyl.nursing.mapper;
 
-import java.util.List;
-import com.zzyl.nursing.domain.NursingProject;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zzyl.nursing.vo.NursingProjectVo;
 import org.apache.ibatis.annotations.Mapper;
+import java.util.List;
+import com.zzyl.nursing.domain.NursingProject;
 import org.apache.ibatis.annotations.Select;
 
 /**
  * 护理项目Mapper接口
- * 
+ *
  * @author ruoyi
- * @date 2025-07-11
+ * @date 2025-07-13
  */
 @Mapper
-public interface NursingProjectMapper 
+
+public interface NursingProjectMapper extends BaseMapper<NursingProject>
 {
     /**
      * 查询护理项目
-     * 
+     *
      * @param id 护理项目主键
      * @return 护理项目
      */
@@ -25,7 +27,7 @@ public interface NursingProjectMapper
 
     /**
      * 查询护理项目列表
-     * 
+     *
      * @param nursingProject 护理项目
      * @return 护理项目集合
      */
@@ -33,7 +35,7 @@ public interface NursingProjectMapper
 
     /**
      * 新增护理项目
-     * 
+     *
      * @param nursingProject 护理项目
      * @return 结果
      */
@@ -41,7 +43,7 @@ public interface NursingProjectMapper
 
     /**
      * 修改护理项目
-     * 
+     *
      * @param nursingProject 护理项目
      * @return 结果
      */
@@ -49,7 +51,7 @@ public interface NursingProjectMapper
 
     /**
      * 删除护理项目
-     * 
+     *
      * @param id 护理项目主键
      * @return 结果
      */
@@ -57,16 +59,12 @@ public interface NursingProjectMapper
 
     /**
      * 批量删除护理项目
-     * 
+     *
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */
     public int deleteNursingProjectByIds(Long[] ids);
 
-    /**
-     * 查询所有护理项目
-     * @return
-     */
     @Select("select id value,name label from nursing_project where status = 1 ")
-    List<NursingProjectVo> all();
+    List<NursingProjectVo> selectAll();
 }

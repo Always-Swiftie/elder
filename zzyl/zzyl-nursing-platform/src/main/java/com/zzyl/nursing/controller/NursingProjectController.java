@@ -1,10 +1,11 @@
 package com.zzyl.nursing.controller;
 
-import java.util.List;
-import javax.servlet.http.HttpServletResponse;
-
+import com.zzyl.nursing.vo.NursingProjectVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import java.util.List;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,23 +27,17 @@ import com.zzyl.common.core.page.TableDataInfo;
 
 /**
  * 护理项目Controller
- * 
+ *
  * @author ruoyi
- * @date 2025-07-11
+ * @date 2025-07-13
  */
 @RestController
 @RequestMapping("/serve/project")
-@Api(tags = "护理项目管理接口")
+@Api(tags =  "护理项目相关接口")
 public class NursingProjectController extends BaseController
 {
     @Autowired
     private INursingProjectService nursingProjectService;
-
-    @GetMapping("/all")
-    @ApiOperation("查询所有护理项目")
-    public AjaxResult listAll(){
-        return AjaxResult.success(nursingProjectService.listAll());
-    }
 
     /**
      * 查询护理项目列表
@@ -77,7 +72,8 @@ public class NursingProjectController extends BaseController
     @PreAuthorize("@ss.hasPermi('serve:project:query')")
     @GetMapping(value = "/{id}")
     @ApiOperation("获取护理项目详细信息")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
+    public AjaxResult getInfo(@ApiParam(value = "护理项目ID", required = true)
+                              @PathVariable("id") Long id)
     {
         return success(nursingProjectService.selectNursingProjectById(id));
     }
@@ -89,7 +85,7 @@ public class NursingProjectController extends BaseController
     @Log(title = "护理项目", businessType = BusinessType.INSERT)
     @PostMapping
     @ApiOperation("新增护理项目")
-    public AjaxResult add(@RequestBody NursingProject nursingProject)
+    public AjaxResult add(@ApiParam(value = "护理项目实体", required = true) @RequestBody NursingProject nursingProject)
     {
         return toAjax(nursingProjectService.insertNursingProject(nursingProject));
     }
@@ -101,7 +97,7 @@ public class NursingProjectController extends BaseController
     @Log(title = "护理项目", businessType = BusinessType.UPDATE)
     @PutMapping
     @ApiOperation("修改护理项目")
-    public AjaxResult edit(@RequestBody NursingProject nursingProject)
+    public AjaxResult edit(@ApiParam(value = "护理项目实体", required = true)  @RequestBody NursingProject nursingProject)
     {
         return toAjax(nursingProjectService.updateNursingProject(nursingProject));
     }
@@ -111,10 +107,21 @@ public class NursingProjectController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('serve:project:remove')")
     @Log(title = "护理项目", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
+    @DeleteMapping("/{ids}")
     @ApiOperation("删除护理项目")
     public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(nursingProjectService.deleteNursingProjectByIds(ids));
+    }
+
+    /**
+     * 查询护理项目列表
+     */
+    @GetMapping("/all")
+    @ApiOperation(value = "查询所有护理项目")
+    public AjaxResult listAll()
+    {
+        List<NursingProjectVo> list = nursingProjectService.selectAll();
+        return success(list);
     }
 }

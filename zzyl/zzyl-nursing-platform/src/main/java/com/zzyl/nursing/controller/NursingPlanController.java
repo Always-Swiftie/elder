@@ -1,14 +1,11 @@
 package com.zzyl.nursing.controller;
 
-import java.util.Arrays;
-import java.util.List;
-import javax.servlet.http.HttpServletResponse;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zzyl.nursing.dto.NursingPlanDto;
-import com.zzyl.nursing.vo.NursingPlanVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import java.util.List;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,13 +27,13 @@ import com.zzyl.common.core.page.TableDataInfo;
 
 /**
  * 护理计划Controller
- * 
+ *
  * @author ruoyi
- * @date 2025-07-12
+ * @date 2025-07-13
  */
 @RestController
 @RequestMapping("/nursing/nursingPlan")
-@Api(tags = "护理计划接口")
+@Api(tags =  "护理计划相关接口")
 public class NursingPlanController extends BaseController
 {
     @Autowired
@@ -75,11 +72,10 @@ public class NursingPlanController extends BaseController
     @PreAuthorize("@ss.hasPermi('nursing:nursingPlan:query')")
     @GetMapping(value = "/{id}")
     @ApiOperation("获取护理计划详细信息")
-    public AjaxResult getInfo(@PathVariable("id") Integer id)
+    public AjaxResult getInfo(@ApiParam(value = "护理计划ID", required = true)
+                              @PathVariable("id") Integer id)
     {
-        NursingPlanVo nursingPlan = nursingPlanService.selectNursingPlanById(id);
-        logger.info("返回给前端的id:{}", nursingPlan.getId());
-        return success(nursingPlan);
+        return success(nursingPlanService.selectNursingPlanById(id));
     }
 
     /**
@@ -89,9 +85,8 @@ public class NursingPlanController extends BaseController
     @Log(title = "护理计划", businessType = BusinessType.INSERT)
     @PostMapping
     @ApiOperation("新增护理计划")
-        public AjaxResult add(@RequestBody NursingPlanDto dto)
+    public AjaxResult add(@ApiParam(value = "护理计划实体", required = true) @RequestBody NursingPlanDto dto)
     {
-        logger.info("新增护理计划");
         return toAjax(nursingPlanService.insertNursingPlan(dto));
     }
 
@@ -102,9 +97,8 @@ public class NursingPlanController extends BaseController
     @Log(title = "护理计划", businessType = BusinessType.UPDATE)
     @PutMapping
     @ApiOperation("修改护理计划")
-    public AjaxResult edit(@RequestBody NursingPlanDto dto)
+    public AjaxResult edit(@ApiParam(value = "护理计划实体", required = true) @RequestBody NursingPlanDto dto)
     {
-        logger.info("修改护理计划");
         return toAjax(nursingPlanService.updateNursingPlan(dto));
     }
 
@@ -113,11 +107,10 @@ public class NursingPlanController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('nursing:nursingPlan:remove')")
     @Log(title = "护理计划", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
+    @DeleteMapping("/{id}")
     @ApiOperation("删除护理计划")
-    public AjaxResult remove(@PathVariable Integer[] ids)
+    public AjaxResult remove(@PathVariable Integer id)
     {
-        logger.info("批量删除护理计划:{}", Arrays.toString(ids));
-        return toAjax(nursingPlanService.deleteNursingPlanByIds(ids));
+        return toAjax(nursingPlanService.deleteNursingPlanByIds(id));
     }
 }

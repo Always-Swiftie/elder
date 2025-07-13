@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zzyl.nursing.mapper.NursingPlanMapper">
-    
+
     <resultMap type="NursingPlan" id="NursingPlanResult">
         <result property="id"    column="id"    />
         <result property="sortNo"    column="sort_no"    />
@@ -22,13 +22,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectNursingPlanList" parameterType="NursingPlan" resultMap="NursingPlanResult">
         <include refid="selectNursingPlanVo"/>
-        <where>  
+        <where>
             <if test="sortNo != null "> and sort_no = #{sortNo}</if>
             <if test="planName != null  and planName != ''"> and plan_name like concat('%', #{planName}, '%')</if>
             <if test="status != null "> and status = #{status}</if>
         </where>
     </select>
-    
+
     <select id="selectNursingPlanById" parameterType="Integer" resultMap="NursingPlanResult">
         <include refid="selectNursingPlanVo"/>
         where id = #{id}
@@ -45,7 +45,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createBy != null">create_by,</if>
             <if test="updateBy != null">update_by,</if>
             <if test="remark != null">remark,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="sortNo != null">#{sortNo},</if>
             <if test="planName != null and planName != ''">#{planName},</if>
@@ -55,7 +55,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createBy != null">#{createBy},</if>
             <if test="updateBy != null">#{updateBy},</if>
             <if test="remark != null">#{remark},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateNursingPlan" parameterType="NursingPlan">
@@ -78,7 +78,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteNursingPlanByIds" parameterType="String">
-        delete from nursing_plan where id in 
+        delete from nursing_plan where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

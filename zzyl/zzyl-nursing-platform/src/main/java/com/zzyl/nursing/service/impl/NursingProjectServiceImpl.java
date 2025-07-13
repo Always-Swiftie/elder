@@ -9,33 +9,36 @@ import com.zzyl.nursing.mapper.NursingProjectMapper;
 import com.zzyl.nursing.domain.NursingProject;
 import com.zzyl.nursing.service.INursingProjectService;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import java.util.Arrays;
+
 /**
  * 护理项目Service业务层处理
- * 
+ *
  * @author ruoyi
- * @date 2025-07-11
+ * @date 2025-07-13
  */
 @Service
-public class NursingProjectServiceImpl implements INursingProjectService 
+public class NursingProjectServiceImpl extends ServiceImpl<NursingProjectMapper, NursingProject> implements INursingProjectService
 {
     @Autowired
     private NursingProjectMapper nursingProjectMapper;
 
     /**
      * 查询护理项目
-     * 
+     *
      * @param id 护理项目主键
      * @return 护理项目
      */
     @Override
     public NursingProject selectNursingProjectById(Long id)
     {
-        return nursingProjectMapper.selectNursingProjectById(id);
+        return getById(id);
     }
 
     /**
      * 查询护理项目列表
-     * 
+     *
      * @param nursingProject 护理项目
      * @return 护理项目
      */
@@ -47,61 +50,61 @@ public class NursingProjectServiceImpl implements INursingProjectService
 
     /**
      * 新增护理项目
-     * 
+     *
      * @param nursingProject 护理项目
      * @return 结果
      */
     @Override
     public int insertNursingProject(NursingProject nursingProject)
     {
-        nursingProject.setCreateTime(DateUtils.getNowDate());
-        nursingProject.setUnit("次");
-        return nursingProjectMapper.insertNursingProject(nursingProject);
+
+        return save(nursingProject) == true? 1 : 0;
     }
 
     /**
      * 修改护理项目
-     * 
+     *
      * @param nursingProject 护理项目
      * @return 结果
      */
     @Override
     public int updateNursingProject(NursingProject nursingProject)
     {
-        nursingProject.setUpdateTime(DateUtils.getNowDate());
-        return nursingProjectMapper.updateNursingProject(nursingProject);
+
+        return updateById(nursingProject) == true ? 1 : 0;
     }
 
     /**
      * 批量删除护理项目
-     * 
+     *
      * @param ids 需要删除的护理项目主键
      * @return 结果
      */
     @Override
     public int deleteNursingProjectByIds(Long[] ids)
     {
-        return nursingProjectMapper.deleteNursingProjectByIds(ids);
+        return removeByIds(Arrays.asList(ids)) == true ? 1 : 0;
     }
 
     /**
      * 删除护理项目信息
-     * 
+     *
      * @param id 护理项目主键
      * @return 结果
      */
     @Override
     public int deleteNursingProjectById(Long id)
     {
-        return nursingProjectMapper.deleteNursingProjectById(id);
+        return removeById(id) == true ? 1 : 0;
     }
 
     /**
      * 查询所有护理项目
+     *
      * @return
      */
     @Override
-    public List<NursingProjectVo> listAll() {
-        return nursingProjectMapper.all();
+    public List<NursingProjectVo> selectAll() {
+        return nursingProjectMapper.selectAll();
     }
 }

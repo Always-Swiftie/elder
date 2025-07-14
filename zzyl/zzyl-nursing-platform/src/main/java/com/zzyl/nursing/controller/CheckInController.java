@@ -1,5 +1,6 @@
 package com.zzyl.nursing.controller;
 
+import com.zzyl.nursing.dto.CheckInApplyDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -111,5 +112,15 @@ public class CheckInController extends BaseController
     public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(checkInService.deleteCheckInByIds(ids));
+    }
+
+    /**
+     * 申请入住
+     */
+    @PostMapping("/apply")
+    @ApiOperation("申请入住")
+    public AjaxResult apply(@RequestBody CheckInApplyDto dto){
+        checkInService.apply(dto);
+        return AjaxResult.success();
     }
 }

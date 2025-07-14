@@ -34,6 +34,10 @@
         <include refid="selectNursingLevelVo"/>
         where id = #{id}
     </select>
+    <select id="listAll" resultType="com.zzyl.nursing.domain.NursingLevel">
+        <include refid="selectNursingLevelVo"/>
+        where status = 1
+    </select>
 
     <insert id="insertNursingLevel" parameterType="NursingLevel" useGeneratedKeys="true" keyProperty="id">
         insert into nursing_level

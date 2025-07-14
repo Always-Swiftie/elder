@@ -96,4 +96,9 @@ public class NursingLevelServiceImpl extends ServiceImpl<NursingLevelMapper, Nur
     {
         return removeById(id) == true ? 1 : 0;
     }
+
+    @Override
+    public List<NursingLevel> listAll() {
+        return nursingLevelMapper.listAll();
+    }
 }

@@ -3,16 +3,18 @@ package com.zzyl.nursing.domain;
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import com.zzyl.common.annotation.Excel;
 import com.zzyl.common.core.domain.BaseEntity;
 
 /**
  * 入住对象 check_in
  * 
- * @author ruoyi
- * @date 2024-09-13
+ * @author anthony
+ * @date 2025-07-14
  */
-@Data
+@Data 
 public class CheckIn extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -57,7 +59,5 @@ public class CheckIn extends BaseEntity
     /** 排序编号 */
     @Excel(name = "排序编号")
     private Integer sortOrder;
-
-
 
 }

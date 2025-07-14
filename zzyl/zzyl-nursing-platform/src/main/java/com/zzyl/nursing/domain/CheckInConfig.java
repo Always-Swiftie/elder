@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import com.zzyl.common.annotation.Excel;
 import com.zzyl.common.core.domain.BaseEntity;
 
@@ -11,9 +13,9 @@ import com.zzyl.common.core.domain.BaseEntity;
  * 入住配置对象 check_in_config
  * 
  * @author ruoyi
- * @date 2024-09-13
+ * @date 2025-07-14
  */
-@Data
+@Data 
 public class CheckInConfig extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -70,7 +72,5 @@ public class CheckInConfig extends BaseEntity
     /** 排序编号 */
     @Excel(name = "排序编号")
     private Integer sortOrder;
-
-
 
 }

@@ -31,7 +31,7 @@ import com.zzyl.common.core.page.TableDataInfo;
  * @date 2025-07-13
  */
 @RestController
-@RequestMapping("/level/level")
+@RequestMapping("/nursing/nursingLevel")
 @Api(tags =  "护理等级相关接口")
 public class NursingLevelController extends BaseController
 {

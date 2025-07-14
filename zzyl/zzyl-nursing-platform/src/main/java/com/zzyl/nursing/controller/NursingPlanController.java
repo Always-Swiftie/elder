@@ -113,4 +113,15 @@ public class NursingPlanController extends BaseController
     {
         return toAjax(nursingPlanService.deleteNursingPlanByIds(id));
     }
+
+    // 后端 NursingPlanController 中新增
+    /**
+     * 查询所有护理计划（无分页，用于下拉框等）
+     */
+    @GetMapping("/allList") // 新增的接口路径
+    @ApiOperation("查询所有护理计划（无分页）")
+    public AjaxResult allList() {
+        List<NursingPlan> list = nursingPlanService.selectNursingPlanList(new NursingPlan()); // 注意这里不调用 startPage()
+        return success(list);
+    }
 }

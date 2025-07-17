@@ -256,7 +256,17 @@ public class CheckInServiceImpl extends ServiceImpl<CheckInMapper, CheckIn> impl
         CheckIn checkIn = checkInMapper.selectById(id);
         CheckInConfigVo checkInConfigVo = new CheckInConfigVo();
         BeanUtils.copyProperties(checkIn,checkInConfigVo);//完成属性赋值
-
+        CheckInConfig checkInConfig = checkInConfigMapper.selectById(id);
+        checkInConfigVo.setNursingLevelId(checkInConfig.getNursingLevelId());
+        checkInConfigVo.setCheckInId(id);
+        checkInConfigVo.setFeeStartDate(checkInConfig.getFeeStartDate());
+        checkInConfigVo.setFeeEndDate(checkInConfig.getFeeEndDate());
+        checkInConfigVo.setDeposit(checkInConfig.getDeposit());
+        checkInConfigVo.setInsurancePayment(checkInConfig.getInsurancePayment());
+        checkInConfigVo.setGovernmentSubsidy(checkInConfig.getGovernmentSubsidy());
+        checkInConfigVo.setNursingFee(checkInConfig.getNursingFee());
+        checkInConfigVo.setOtherFees(checkInConfig.getOtherFees());
+        checkInConfigVo.setBedFee(checkInConfig.getBedFee());
         //STEP2.通过checkIn对象拿到老人的elder_id,进而获取elder对象
         Long elderId = checkIn.getElderId();
         Elder elder = elderMapper.selectById(elderId);

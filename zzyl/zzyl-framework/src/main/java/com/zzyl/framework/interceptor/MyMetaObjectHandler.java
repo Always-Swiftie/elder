@@ -30,10 +30,14 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
      */
     public static Long loadUserId(){
         //获取当前登录人的id
-        LoginUser loginUser = SecurityUtils.getLoginUser();
-        if(ObjectUtils.isNotEmpty(loginUser)){
-            return loginUser.getUserId();
+        try {
+            LoginUser loginUser = SecurityUtils.getLoginUser();
+            if (ObjectUtils.isNotEmpty(loginUser)) {
+                return loginUser.getUserId();
+            }
+            return 1L;
+        } catch (Exception e) {
+            return 1L;
         }
-        return 1L;
     }
 }

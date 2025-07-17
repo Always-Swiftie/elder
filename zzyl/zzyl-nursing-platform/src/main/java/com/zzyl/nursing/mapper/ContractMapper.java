@@ -62,4 +62,10 @@ public interface ContractMapper extends BaseMapper<Contract>
      * @return 结果
      */
     public int deleteContractByIds(Long[] ids);
+
+    /**
+     * 根据老人ID查询合同信息
+     * @return
+     */
+    Contract selectContractByElderId(Long id);
 }

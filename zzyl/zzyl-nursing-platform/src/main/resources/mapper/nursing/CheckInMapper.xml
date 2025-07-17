@@ -46,6 +46,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
 
+    <select id="selectCheckInByElderId" resultType="com.zzyl.nursing.domain.CheckIn">
+        <include refid="selectCheckInVo"/>
+        where elder_id = #{id}
+    </select>
+    <select id="selectCheckInRemarkById" resultType="java.lang.String">
+        select remark from `ry-zzyl2`.check_in where id = #{id}
+    </select>
+
     <insert id="insertCheckIn" parameterType="CheckIn" useGeneratedKeys="true" keyProperty="id">
         insert into check_in
         <trim prefix="(" suffix=")" suffixOverrides=",">

@@ -2,8 +2,11 @@ package com.zzyl.nursing.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.zzyl.nursing.domain.CheckIn;
 import com.zzyl.nursing.dto.CheckInApplyDto;
+import com.zzyl.nursing.vo.CheckInDetailVo;
 
 /**
  * 入住Service接口
@@ -66,4 +69,11 @@ public interface ICheckInService extends IService<CheckIn>
      * @param
      */
     void apply(CheckInApplyDto checkInApplyDto);
+
+    /**
+     * 获取入住信息详情
+     * @param id
+     * @return
+     */
+    CheckInDetailVo getCheckInDetailById(Long id) throws JsonProcessingException;
 }

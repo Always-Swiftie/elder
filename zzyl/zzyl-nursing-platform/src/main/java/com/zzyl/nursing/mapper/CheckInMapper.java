@@ -62,4 +62,18 @@ public interface CheckInMapper extends BaseMapper<CheckIn>
      * @return 结果
      */
     public int deleteCheckInByIds(Long[] ids);
+
+    /**
+     * 根据老人id获取checkIn信息
+     * @param id
+     * @return
+     */
+    List<CheckIn> selectCheckInByElderId(Long id);
+
+    /**
+     * 通过主键id获取备注信息（包含第三方，家属信息）
+     * @param id
+     * @return
+     */
+    String selectCheckInRemarkById(Long id);
 }

@@ -52,6 +52,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
 
+    <select id="selectCheckInConfigByCheckInId" resultType="com.zzyl.nursing.domain.CheckInConfig">
+        <include refid="selectCheckInConfigVo"/>
+        where check_in_id = #{id}
+    </select>
+
     <insert id="insertCheckInConfig" parameterType="CheckInConfig" useGeneratedKeys="true" keyProperty="id">
         insert into check_in_config
         <trim prefix="(" suffix=")" suffixOverrides=",">

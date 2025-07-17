@@ -1,6 +1,8 @@
 package com.zzyl.nursing.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.zzyl.nursing.dto.CheckInApplyDto;
+import com.zzyl.nursing.vo.CheckInDetailVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -122,5 +124,15 @@ public class CheckInController extends BaseController
     public AjaxResult apply(@RequestBody CheckInApplyDto dto){
         checkInService.apply(dto);
         return AjaxResult.success();
+    }
+
+    /**
+     * 查询入住详情
+     */
+    @GetMapping("/detail/{id}")
+    @ApiOperation("查询入住详情")
+    public AjaxResult detail(@PathVariable("id") Long id) throws JsonProcessingException {
+        CheckInDetailVo checkInDetailVo = checkInService.getCheckInDetailById(id);
+        return AjaxResult.success(checkInDetailVo);
     }
 }

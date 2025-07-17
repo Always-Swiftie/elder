@@ -4,6 +4,7 @@ import com.zzyl.nursing.domain.CheckInConfig;
 import com.zzyl.nursing.domain.Contract;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
  **/
 @ApiModel(description = "入住详情响应模型")
 @Data
+@Builder
 public class CheckInDetailVo {
     /**
      * 老人信息

@@ -62,4 +62,14 @@ public interface CheckInConfigMapper extends BaseMapper<CheckInConfig>
      * @return 结果
      */
     public int deleteCheckInConfigByIds(Long[] ids);
+
+    /**
+     * 根据入住表id获取入住配置信息
+     * @param id
+     * @return
+     */
+    CheckInConfig selectCheckInConfigByCheckInId(Long id);
+
+
+
 }

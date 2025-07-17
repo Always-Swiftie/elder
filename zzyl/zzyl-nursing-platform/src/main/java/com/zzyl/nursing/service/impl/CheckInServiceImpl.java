@@ -1,10 +1,15 @@
 package com.zzyl.nursing.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zzyl.common.exception.base.BaseException;
 import com.zzyl.common.utils.DateUtils;
 import com.zzyl.generator.util.CodeGenerator;
@@ -12,6 +17,10 @@ import com.zzyl.nursing.domain.*;
 import com.zzyl.nursing.dto.CheckInApplyDto;
 import com.zzyl.nursing.dto.CheckInElderDto;
 import com.zzyl.nursing.mapper.*;
+import com.zzyl.nursing.vo.CheckInConfigVo;
+import com.zzyl.nursing.vo.CheckInDetailVo;
+import com.zzyl.nursing.vo.CheckInElderVo;
+import com.zzyl.nursing.vo.ElderFamilyVo;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -234,5 +243,46 @@ public class CheckInServiceImpl extends ServiceImpl<CheckInMapper, CheckIn> impl
             elderMapper.insert(elder);
         }
         return elder;
+    }
+
+    /**
+     * 获取入住信息详情
+     * @param id -- 入住信息的主键id
+     * @return
+     */
+    @Override
+    public CheckInDetailVo getCheckInDetailById(Long id) throws JsonProcessingException {
+        //STEP1.根据id先拿到CheckIn对象
+        CheckIn checkIn = checkInMapper.selectById(id);
+        CheckInConfigVo checkInConfigVo = new CheckInConfigVo();
+        BeanUtils.copyProperties(checkIn,checkInConfigVo);//完成属性赋值
+
+        //STEP2.通过checkIn对象拿到老人的elder_id,进而获取elder对象
+        Long elderId = checkIn.getElderId();
+        Elder elder = elderMapper.selectById(elderId);
+        CheckInElderVo checkInElderVo = new CheckInElderVo();
+        BeanUtils.copyProperties(elder,checkInElderVo);//还差age属性需要自己计算得到
+        String birthYear = elder.getBirthday().substring(0,4);
+        Integer age = LocalDate.now().getYear() - Integer.parseInt(birthYear);
+        checkInElderVo.setAge(age);
+
+        //STEP3.获取Contract对象--通过主键id拿到即可
+        Contract contract = contractMapper.selectContractById(id);
+
+        //STEP4.获取ElderFamily对象
+        String remark = checkInMapper.selectCheckInRemarkById(id);
+        log.error(remark);
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<ElderFamilyVo> list = objectMapper.readValue(remark, new TypeReference<List<ElderFamilyVo>>() {});
+        //STEP5.属性获取完成,赋值
+        CheckInDetailVo checkInDetailVo = CheckInDetailVo
+                .builder()
+                .elderFamilyVoList(list)
+                .checkInConfigVo(checkInConfigVo)
+                .checkInElderVo(checkInElderVo)
+                .contract(contract)
+                .build();
+
+        return checkInDetailVo;
     }
 }

@@ -3,6 +3,7 @@ package com.zzyl.nursing.service.impl;
 import java.util.List;
 import com.zzyl.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import com.zzyl.nursing.mapper.NursingLevelMapper;
 import com.zzyl.nursing.domain.NursingLevel;
@@ -22,6 +23,11 @@ public class NursingLevelServiceImpl extends ServiceImpl<NursingLevelMapper, Nur
 {
     @Autowired
     private NursingLevelMapper nursingLevelMapper;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    private static final String KEY = "nursingLevel:all";
 
     /**
      * 查询护理等级
@@ -56,8 +62,16 @@ public class NursingLevelServiceImpl extends ServiceImpl<NursingLevelMapper, Nur
     @Override
     public int insertNursingLevel(NursingLevel nursingLevel)
     {
+        nursingLevel.setCreateTime(DateUtils.getNowDate());
+        int flag = nursingLevelMapper.insertNursingLevel(nursingLevel);
+        //删除缓存
+        deleteCache();
+        return flag;
+    }
 
-        return save(nursingLevel) == true? 1 : 0;
+    private void deleteCache(){
+        //删除缓存
+        redisTemplate.delete(KEY);
     }
 
     /**
@@ -69,8 +83,10 @@ public class NursingLevelServiceImpl extends ServiceImpl<NursingLevelMapper, Nur
     @Override
     public int updateNursingLevel(NursingLevel nursingLevel)
     {
-
-        return updateById(nursingLevel) == true ? 1 : 0;
+        nursingLevel.setUpdateTime(DateUtils.getNowDate());
+        int flag = nursingLevelMapper.updateNursingLevel(nursingLevel);
+        deleteCache();
+        return flag;
     }
 
     /**
@@ -82,7 +98,9 @@ public class NursingLevelServiceImpl extends ServiceImpl<NursingLevelMapper, Nur
     @Override
     public int deleteNursingLevelByIds(Integer[] ids)
     {
-        return removeByIds(Arrays.asList(ids)) == true ? 1 : 0;
+        int flag = nursingLevelMapper.deleteNursingLevelByIds(ids);
+        deleteCache();
+        return flag;
     }
 
     /**
@@ -94,11 +112,23 @@ public class NursingLevelServiceImpl extends ServiceImpl<NursingLevelMapper, Nur
     @Override
     public int deleteNursingLevelById(Integer id)
     {
-        return removeById(id) == true ? 1 : 0;
+        int flag = nursingLevelMapper.deleteNursingLevelById(id);
+        deleteCache();
+        return flag;
     }
 
     @Override
     public List<NursingLevel> listAll() {
-        return nursingLevelMapper.listAll();
+        //先从缓存中获取
+        List<NursingLevel> list = (List<NursingLevel>) redisTemplate.opsForValue().get(KEY);
+        //如果缓存命中，则返回
+        if(list != null && !list.isEmpty()){
+            log.debug("调用redis缓存...");
+            return list;
+        }
+        //若缓存未命中,需要从数据库中查询,再设置缓存
+        list = nursingLevelMapper.listAll();
+        redisTemplate.opsForValue().set(KEY,list);
+        return list;
     }
 }

@@ -2,6 +2,8 @@ package com.zzyl.nursing.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.time.LocalDate;
 import java.util.List;
 import com.zzyl.nursing.domain.Contract;
 
@@ -68,4 +70,18 @@ public interface ContractMapper extends BaseMapper<Contract>
      * @return
      */
     Contract selectContractByElderId(Long id);
+
+    /**
+     * 获取所有生效日期在今日之后的合同
+     * @param now
+     * @return
+     */
+    List<Contract> selectByTimeAfter(LocalDate now);
+
+    /**
+     * 获取所有生效日期在今日之前的合同
+     * @param now
+     * @return
+     */
+    List<Contract> selectByTimeBefore(LocalDate now);
 }

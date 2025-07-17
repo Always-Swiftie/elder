@@ -62,6 +62,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where elder_id = #{id}
     </select>
 
+    <select id="selectByTimeAfter" resultType="com.zzyl.nursing.domain.Contract">
+        <include refid="selectContractVo"/>
+            where start_date >= #{now}
+    </select>
+    <select id="selectByTimeBefore" resultType="com.zzyl.nursing.domain.Contract">
+        <include refid="selectContractVo"/>
+            where start_date &amp;lt #{now}
+    </select>
+
     <insert id="insertContract" parameterType="Contract" useGeneratedKeys="true" keyProperty="id">
         insert into contract
         <trim prefix="(" suffix=")" suffixOverrides=",">

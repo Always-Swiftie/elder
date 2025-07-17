@@ -63,5 +63,6 @@ public interface INursingPlanService extends IService<NursingPlan>
      */
     public int deleteNursingPlanById(Integer id);
 
+    public List<NursingPlan> listAll();
 
 }

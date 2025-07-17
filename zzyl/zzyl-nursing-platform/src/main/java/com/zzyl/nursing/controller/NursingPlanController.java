@@ -121,7 +121,7 @@ public class NursingPlanController extends BaseController
     @GetMapping("/allList") // 新增的接口路径
     @ApiOperation("查询所有护理计划（无分页）")
     public AjaxResult allList() {
-        List<NursingPlan> list = nursingPlanService.selectNursingPlanList(new NursingPlan()); // 注意这里不调用 startPage()
+        List<NursingPlan> list = nursingPlanService.listAll();
         return success(list);
     }
 }

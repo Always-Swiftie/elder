@@ -4,6 +4,7 @@ import java.util.List;
 import com.zzyl.common.utils.DateUtils;
 import com.zzyl.nursing.vo.NursingProjectVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import com.zzyl.nursing.mapper.NursingProjectMapper;
 import com.zzyl.nursing.domain.NursingProject;
@@ -23,6 +24,11 @@ public class NursingProjectServiceImpl extends ServiceImpl<NursingProjectMapper,
 {
     @Autowired
     private NursingProjectMapper nursingProjectMapper;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    private static final String KEY = "nursingProject:all";
 
     /**
      * 查询护理项目
@@ -57,8 +63,13 @@ public class NursingProjectServiceImpl extends ServiceImpl<NursingProjectMapper,
     @Override
     public int insertNursingProject(NursingProject nursingProject)
     {
-
+        //删除缓存
+        deleteCache();
         return save(nursingProject) == true? 1 : 0;
+    }
+
+    private void deleteCache(){
+        redisTemplate.delete(KEY);
     }
 
     /**
@@ -70,7 +81,7 @@ public class NursingProjectServiceImpl extends ServiceImpl<NursingProjectMapper,
     @Override
     public int updateNursingProject(NursingProject nursingProject)
     {
-
+        deleteCache();
         return updateById(nursingProject) == true ? 1 : 0;
     }
 
@@ -83,6 +94,7 @@ public class NursingProjectServiceImpl extends ServiceImpl<NursingProjectMapper,
     @Override
     public int deleteNursingProjectByIds(Long[] ids)
     {
+        deleteCache();
         return removeByIds(Arrays.asList(ids)) == true ? 1 : 0;
     }
 
@@ -95,6 +107,7 @@ public class NursingProjectServiceImpl extends ServiceImpl<NursingProjectMapper,
     @Override
     public int deleteNursingProjectById(Long id)
     {
+        deleteCache();
         return removeById(id) == true ? 1 : 0;
     }
 
@@ -105,6 +118,16 @@ public class NursingProjectServiceImpl extends ServiceImpl<NursingProjectMapper,
      */
     @Override
     public List<NursingProjectVo> selectAll() {
-        return nursingProjectMapper.selectAll();
+        //先从缓存中获取
+        List<NursingProjectVo> list = (List<NursingProjectVo>) redisTemplate.opsForValue().get(KEY);
+        //如果成功命中缓存
+        if(list != null && !list.isEmpty()){
+            log.debug("调用redis缓存,护理项目");
+            return list;
+        }
+        //没有命中缓存,先从数据库查
+        list = nursingProjectMapper.selectAll();
+        redisTemplate.opsForValue().set(KEY, list);
+        return list;
     }
 }

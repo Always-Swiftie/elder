@@ -12,6 +12,7 @@ import org.apache.ibatis.annotations.Select;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import com.zzyl.nursing.mapper.NursingPlanMapper;
 import com.zzyl.nursing.domain.NursingPlan;
@@ -33,8 +34,14 @@ public class NursingPlanServiceImpl extends ServiceImpl<NursingPlanMapper, Nursi
 {
     @Autowired
     private NursingPlanMapper nursingPlanMapper;
+
     @Autowired
     private NursingProjectPlanMapper nursingProjectPlanMapper;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    private static final String KEY = "nursingPlan:all";
 
     /**
      * 查询护理计划
@@ -88,7 +95,14 @@ public class NursingPlanServiceImpl extends ServiceImpl<NursingPlanMapper, Nursi
 
         //批量保存护理项目计划关系
         int count = nursingProjectPlanMapper.batchInsert(dto.getProjectPlans(), nursingPlan.getId());
+        //删除缓存
+        deleteCache();
         return count == 0 ? 0 : 1;
+    }
+
+    private void deleteCache(){
+        //删除缓存
+        redisTemplate.delete(KEY);
     }
 
     /**
@@ -112,8 +126,11 @@ public class NursingPlanServiceImpl extends ServiceImpl<NursingPlanMapper, Nursi
                 //批量添加护理计划与护理项目的关系
                 nursingProjectPlanMapper.batchInsert(dto.getProjectPlans(), Math.toIntExact(dto.getId()));
             }
-
+            nursingPlan.setUpdateTime(DateUtils.getNowDate());
             //别管项目列表是否为空，都要修改护理计划
+            //删除缓存
+            deleteCache();
+
             return nursingPlanMapper.updateNursingPlan(nursingPlan);
         } catch (BeansException e) {
             throw new RuntimeException(e);
@@ -133,6 +150,7 @@ public class NursingPlanServiceImpl extends ServiceImpl<NursingPlanMapper, Nursi
             //删除关系
             //删除护理计划与护理项目的关系
             nursingProjectPlanMapper.deleteByPlanId(Long.valueOf(id));
+            deleteCache();
             return nursingPlanMapper.deleteNursingPlanById(id);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -148,7 +166,26 @@ public class NursingPlanServiceImpl extends ServiceImpl<NursingPlanMapper, Nursi
     @Override
     public int deleteNursingPlanById(Integer id)
     {
+        deleteCache();
         return removeById(id) == true ? 1 : 0;
     }
 
+    /**
+     * 查询所有护理计划
+     * @return
+     */
+    @Override
+    public List<NursingPlan> listAll() {
+        //先从缓存中获取
+        List<NursingPlan> list = (List<NursingPlan>) redisTemplate.opsForValue().get(KEY);
+        //如果缓存命中,则返回
+        if(list != null && !list.isEmpty()){
+            log.debug("调用redis缓存,护理等级");
+            return list;
+        }
+        //如果缓存未命中，需要先从数据库中查询,再设置缓存
+        list = nursingPlanMapper.selectNursingPlanList(new NursingPlan());
+        redisTemplate.opsForValue().set(KEY,list);
+        return list;
+    }
 }

@@ -146,3 +146,8 @@ oss:
   accessKeyId: LTAI5t8q61jDnc9eHoThS899
   accessKeySecret: xjYVlmSzVNNw5cF0ucXshD88SwaTwH
   bucketName: zzyl-anthony
+
+baidu:
+  accessKey: ALTAKLpiIrrnPAkH9jrRUguuYW
+  secretKey: 56a005a13ecb4a8392ef8255fe68d559
+  qianfanModel: ERNIE-4.0-8K-Preview

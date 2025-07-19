@@ -40,29 +40,29 @@ pipeline {
         stage('重新构建镜像') {
             steps {
                 echo "当前打镜像tag:${DOCKER_TAG}"
-                script {
-                    for (ds in services.tokenize(",")) {
-                         sh "pwd"
-                         echo "进入target目录执行镜像打包......"
-                         sh "cd ./${ds}/target/ && docker build -t ${ds}:${DOCKER_TAG} -f ../Dockerfile ."
-                    }
+                dir("zzyl/zzyl-admin") {
+                    script {
+                        for (ds in services.tokenize(",")) {
+                            echo "进入target目录执行镜像打包......"
+                            sh "cd ./target/ && docker build -t ${ds}:${DOCKER_TAG} -f ../Dockerfile ."
                 }
             }
         }
+    }
+}
         stage('部署服务'){
             steps {
-                script {
-                    for (ws in services.tokenize(",")) {
-                        sh "pwd"
-                        sh "cd `pwd`"
-                        echo "部署升级:${ws}服务"
-                        sh "chmod +x ./${ws}/deploy.sh && sh ./${ws}/deploy.sh ${ws} ${DOCKER_TAG}"
-                    }
+                    dir("zzyl/zzyl-admin") {
+                        script {
+                            for (ws in services.tokenize(",")) {
+                                echo "部署升级:${ws}服务"
+                                sh "chmod +x ./deploy.sh && ./deploy.sh ${ws} ${DOCKER_TAG}"
                 }
             }
         }
-
     }
+}
+
     post {
         always {
             echo '任务构建完毕'

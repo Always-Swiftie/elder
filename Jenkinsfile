@@ -22,21 +22,19 @@ pipeline {
                           doGenerateSubmoduleConfigurations: false,
                           extensions: [],
                           submoduleCfg: [],
-                          userRemoteConfigs: [[credentialsId: 'server', url: GIT_URL]] // <--- HERE: Add single quotes around the URL
+                          userRemoteConfigs: [[credentialsId: 'server', url: GIT_URL]]
                 ])
                 sh "pwd"
             }
         }
-    stage('重新Maven打包') {
-        steps {
-            echo "正在执行maven打包...."
-            script {
-                dir('zzyl/zzyl-admin') { // <-- 添加 dir 块，进入包含 pom.xml 的子目录
+        stage('重新Maven打包') {
+            steps {
+                script {
+                    echo "正在执行maven打包...."
                     sh "mvn clean install -DskipTests"
+                }
             }
         }
-    }
-}
         stage('重新构建镜像') {
             steps {
                 echo "当前打镜像tag:${DOCKER_TAG}"

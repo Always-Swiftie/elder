@@ -16,7 +16,7 @@ pipeline {
         stage('拉取Git代码') {
             steps {
                 echo "正在拉取代码..."
-                echo "当前分支:${GIT_TAG},当前服务:${services}"
+                echo "当前分支:${GIT_TAG},当前服务:${service}"
                 checkout([$class: 'GitSCM',
                           branches: [[name: GIT_TAG]],
                           doGenerateSubmoduleConfigurations: false,
@@ -39,7 +39,7 @@ pipeline {
             steps {
                 echo "当前打镜像tag:${DOCKER_TAG}"
                 script {
-                    for (ds in services.tokenize(",")) {
+                    for (ds in service.tokenize(",")) {
                          sh "pwd"
                          echo "进入target目录执行镜像打包......"
                          sh "cd ./${ds}/target/ && docker build -t ${ds}:${DOCKER_TAG} -f ../Dockerfile ."
@@ -50,7 +50,7 @@ pipeline {
         stage('部署服务'){
             steps {
                 script {
-                    for (ws in services.tokenize(",")) {
+                    for (ws in service.tokenize(",")) {
                         sh "pwd"
                         sh "cd `pwd`"
                         echo "部署升级:${ws}服务"

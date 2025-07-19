@@ -29,11 +29,11 @@ pipeline {
         }
         stage('重新Maven打包') {
             steps {
-                script {
-                    echo "正在执行maven打包...."
-                    dir("zzyl/zzyl-admin") {
-                                    sh "mvn clean install -DskipTests"
-                                }
+                dir("zzyl/zzyl-admin") {
+                    script {
+                        echo "正在执行maven打包...."
+                        sh "mvn clean install -DskipTests"
+                    }
                 }
             }
         }
@@ -45,24 +45,25 @@ pipeline {
                         for (ds in services.tokenize(",")) {
                             echo "进入target目录执行镜像打包......"
                             sh "cd ./target/ && docker build -t ${ds}:${DOCKER_TAG} -f ../Dockerfile ."
+                        }
+                    }
                 }
             }
         }
-    }
-}
-        stage('部署服务'){
+        stage('部署服务') {
             steps {
-                    dir("zzyl/zzyl-admin") {
-                        script {
-                            for (ws in services.tokenize(",")) {
-                                echo "部署升级:${ws}服务"
-                                sh "chmod +x ./deploy.sh && ./deploy.sh ${ws} ${DOCKER_TAG}"
+                dir("zzyl/zzyl-admin") {
+                    script {
+                        for (ws in services.tokenize(",")) {
+                            sh "pwd"
+                            echo "部署升级:${ws}服务"
+                            sh "chmod +x ./deploy.sh && ./deploy.sh ${ws} ${DOCKER_TAG}"
+                        }
+                    }
                 }
             }
         }
     }
-}
-
     post {
         always {
             echo '任务构建完毕'

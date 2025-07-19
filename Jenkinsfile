@@ -31,7 +31,9 @@ pipeline {
             steps {
                 script {
                     echo "正在执行maven打包...."
-                    sh "mvn clean install -DskipTests"
+                    dir("zzyl/zzyl-admin") {
+                                    sh "mvn clean install -DskipTests"
+                                }
                 }
             }
         }

@@ -36,6 +36,32 @@
         <include refid="selectNursingProjectVo"/>
         where id = #{id}
     </select>
+    <select id="pageQuery" resultType="com.zzyl.nursing.vo.NursingProjectPageVo">
+        <include refid="selectNursingProjectVo"/>
+        <where>
+            <if test="name != null">
+                and name like concat('%',#{name},'%')
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+    <select id="getNursingProjectVoById" resultType="com.zzyl.nursing.vo.NursingProjectPageVo">
+        <include refid="selectNursingProjectVo"/>
+        where id = #{id}
+    </select>
+    <!--    <select id="pageQuery" resultType="com.zzyl.nursing.vo.NursingProjectPageVo">-->
+<!--        <include refid="selectNursingProjectVo"/>-->
+<!--        <where>-->
+<!--            <if test="name != null and name != ''">-->
+<!--                and name like concat('%',#{name},'%')-->
+<!--            </if>-->
+<!--            <if test="status != null">-->
+<!--                and status = #{status}-->
+<!--            </if>-->
+<!--        </where>-->
+<!--    </select>-->
 
     <insert id="insertNursingProject" parameterType="NursingProject" useGeneratedKeys="true" keyProperty="id">
         insert into nursing_project

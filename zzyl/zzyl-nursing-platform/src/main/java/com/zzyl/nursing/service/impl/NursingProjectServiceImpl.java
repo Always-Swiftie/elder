@@ -1,10 +1,16 @@
 package com.zzyl.nursing.service.impl;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import com.zzyl.common.utils.DateUtils;
+import com.zzyl.nursing.dto.NursingProjectPageDto;
+import com.zzyl.nursing.vo.NursingProjectPageVo;
 import com.zzyl.nursing.vo.NursingProjectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import com.zzyl.nursing.mapper.NursingProjectMapper;
 import com.zzyl.nursing.domain.NursingProject;
@@ -12,6 +18,7 @@ import com.zzyl.nursing.service.INursingProjectService;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import java.util.Arrays;
+import java.util.Map;
 
 /**
  * 护理项目Service业务层处理
@@ -29,6 +36,8 @@ public class NursingProjectServiceImpl extends ServiceImpl<NursingProjectMapper,
     private RedisTemplate redisTemplate;
 
     private static final String KEY = "nursingProject:all";
+
+    private static final String USER_KEY = "nursingProject:user:all";
 
     /**
      * 查询护理项目
@@ -129,5 +138,27 @@ public class NursingProjectServiceImpl extends ServiceImpl<NursingProjectMapper,
         list = nursingProjectMapper.selectAll();
         redisTemplate.opsForValue().set(KEY, list);
         return list;
+    }
+
+    /**
+     * 用户端分页查询护理项目
+     * @param params
+     * @return
+     */
+    @Override
+    public List<NursingProjectPageVo> pageQuery(Map<String, Object> params) {
+        List<NursingProjectPageVo> list = nursingProjectMapper.pageQuery(params);
+        return list;
+    }
+
+    /**
+     * 根据id查询单个护理项目信息
+     * @param id
+     * @return
+     */
+    @Override
+    public NursingProjectPageVo getNursingProjectById(Long id) {
+        NursingProjectPageVo vo = nursingProjectMapper.getNursingProjectVoById(id);
+        return vo;
     }
 }

@@ -1,22 +1,23 @@
 package com.zzyl.nursing.controller.member;
 
+import com.github.pagehelper.PageInfo;
+import com.zzyl.nursing.dto.NursingProjectPageDto;
 import com.zzyl.nursing.dto.UserLoginRequestDto;
+import com.zzyl.nursing.service.INursingLevelService;
+import com.zzyl.nursing.service.INursingProjectService;
 import com.zzyl.nursing.vo.LoginVO;
+import com.zzyl.nursing.vo.NursingProjectPageVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.zzyl.common.annotation.Log;
 import com.zzyl.common.core.controller.BaseController;
 import com.zzyl.common.core.domain.AjaxResult;
@@ -33,18 +34,53 @@ import com.zzyl.common.core.page.TableDataInfo;
  * @date 2025-07-21
  */
 @RestController
-@RequestMapping("/member/user")
+@RequestMapping("/member")
 @Api(tags =  "老人家属相关接口")
 public class FamilyMemberController extends BaseController
 {
     @Autowired
     private IFamilyMemberService familyMemberService;
 
-    @PostMapping("/login")
+    @Autowired
+    private INursingProjectService nursingProjectService;
+
+    @PostMapping("/user/login")
     @ApiOperation("小程序登录")
     public AjaxResult login(@RequestBody UserLoginRequestDto userLoginRequestDto){
         LoginVO loginVO = familyMemberService.login(userLoginRequestDto);
         return AjaxResult.success(loginVO);
     }
+
+    @GetMapping("/orders/project/page")
+    @ApiOperation("分页查询护理项目列表")
+    public TableDataInfo pageQueryProject(
+            @RequestParam("pageNum") Integer pageNum,
+            @RequestParam("pageSize") Integer pageSize,
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "status", required = false) Integer status
+    ){
+        startPage();
+        Map<String,Object> map = new HashMap<>();
+        map.put("pageNum",pageNum);
+        map.put("pageSize",pageSize);
+        if(name != null){
+            map.put("name",name);
+        }
+        if(status != null){
+            map.put("status",status);
+        }
+        // 封装分页元信息（PageInfo会包含 total/pageNum/pageSize 等信息）
+        List<NursingProjectPageVo> list = nursingProjectService.pageQuery(map);
+        // 返回符合规范的结构
+        return getDataTable(list);
+    }
+
+//    @GetMapping("/orders/project/{id}")
+//    @ApiOperation("根据编号查询护理项目信息")
+//    public NursingProjectPageVo getNursingProjectById(@PathVariable Long id){
+//        NursingProjectPageVo vo = nursingProjectService.getNursingProjectById(id);
+//        return vo;
+//    }
+
 
 }

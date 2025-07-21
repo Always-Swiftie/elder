@@ -1,9 +1,13 @@
 package com.zzyl.nursing.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zzyl.nursing.dto.NursingProjectPageDto;
+import com.zzyl.nursing.vo.NursingProjectPageVo;
 import com.zzyl.nursing.vo.NursingProjectVo;
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
+import java.util.Map;
+
 import com.zzyl.nursing.domain.NursingProject;
 import org.apache.ibatis.annotations.Select;
 
@@ -67,4 +71,18 @@ public interface NursingProjectMapper extends BaseMapper<NursingProject>
 
     @Select("select id value,name label from nursing_project where status = 1 ")
     List<NursingProjectVo> selectAll();
+
+    /**
+     * 用户端分页查询护理项目
+     * @param
+     * @return
+     */
+    List<NursingProjectPageVo> pageQuery(Map<String, Object> params);
+
+    /**
+     * 根据id查询单个护理项目信息
+     * @param id
+     * @return
+     */
+    NursingProjectPageVo getNursingProjectVoById(Long id);
 }

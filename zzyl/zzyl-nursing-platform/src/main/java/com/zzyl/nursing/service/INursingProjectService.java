@@ -2,7 +2,11 @@ package com.zzyl.nursing.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
+import java.util.Map;
+
 import com.zzyl.nursing.domain.NursingProject;
+import com.zzyl.nursing.dto.NursingProjectPageDto;
+import com.zzyl.nursing.vo.NursingProjectPageVo;
 import com.zzyl.nursing.vo.NursingProjectVo;
 
 /**
@@ -66,4 +70,18 @@ public interface INursingProjectService extends IService<NursingProject>
      * @return
      */
     List<NursingProjectVo> selectAll();
+
+    /**
+     * 用户端分页查询护理项目
+     * @param
+     * @return
+     */
+    List<NursingProjectPageVo> pageQuery(Map<String, Object> params);
+
+    /**
+     * 根据id查询单个护理项目信息(用户端)
+     * @param id
+     * @return
+     */
+    NursingProjectPageVo getNursingProjectById(Long id);
 }

@@ -1,0 +1,50 @@
+package com.zzyl.nursing.controller.member;
+
+import com.zzyl.nursing.dto.UserLoginRequestDto;
+import com.zzyl.nursing.vo.LoginVO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import java.util.List;
+import javax.servlet.http.HttpServletResponse;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import com.zzyl.common.annotation.Log;
+import com.zzyl.common.core.controller.BaseController;
+import com.zzyl.common.core.domain.AjaxResult;
+import com.zzyl.common.enums.BusinessType;
+import com.zzyl.nursing.domain.FamilyMember;
+import com.zzyl.nursing.service.IFamilyMemberService;
+import com.zzyl.common.utils.poi.ExcelUtil;
+import com.zzyl.common.core.page.TableDataInfo;
+
+/**
+ * 老人家属Controller
+ * 
+ * @author ruoyi
+ * @date 2025-07-21
+ */
+@RestController
+@RequestMapping("/nursing/member")
+@Api(tags =  "老人家属相关接口")
+public class FamilyMemberController extends BaseController
+{
+    @Autowired
+    private IFamilyMemberService familyMemberService;
+
+    @PostMapping("/login")
+    @ApiOperation("小程序登录")
+    public AjaxResult login(@RequestBody UserLoginRequestDto userLoginRequestDto){
+        LoginVO loginVO = familyMemberService.login(userLoginRequestDto);
+        return AjaxResult.success(loginVO);
+    }
+
+}

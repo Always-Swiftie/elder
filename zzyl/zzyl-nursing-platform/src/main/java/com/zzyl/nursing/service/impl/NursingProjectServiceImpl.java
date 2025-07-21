@@ -79,6 +79,7 @@ public class NursingProjectServiceImpl extends ServiceImpl<NursingProjectMapper,
 
     private void deleteCache(){
         redisTemplate.delete(KEY);
+        redisTemplate.delete(USER_KEY);
     }
 
     /**
@@ -147,7 +148,16 @@ public class NursingProjectServiceImpl extends ServiceImpl<NursingProjectMapper,
      */
     @Override
     public List<NursingProjectPageVo> pageQuery(Map<String, Object> params) {
-        List<NursingProjectPageVo> list = nursingProjectMapper.pageQuery(params);
+        //先从缓存中获取
+        List<NursingProjectPageVo> list = (List<NursingProjectPageVo>) redisTemplate.opsForValue().get(USER_KEY);
+        //如果成功命中缓存
+        if(list != null && !list.isEmpty()){
+            log.debug("调用redis缓存");
+            return list;
+        }
+        //没有命中缓存,先从数据库中查
+        list = nursingProjectMapper.pageQuery(params);
+        redisTemplate.opsForValue().set(USER_KEY, list);
         return list;
     }
 

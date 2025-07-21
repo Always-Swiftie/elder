@@ -75,12 +75,12 @@ public class FamilyMemberController extends BaseController
         return getDataTable(list);
     }
 
-//    @GetMapping("/orders/project/{id}")
-//    @ApiOperation("根据编号查询护理项目信息")
-//    public NursingProjectPageVo getNursingProjectById(@PathVariable Long id){
-//        NursingProjectPageVo vo = nursingProjectService.getNursingProjectById(id);
-//        return vo;
-//    }
+    @GetMapping("/orders/project/{id}")
+    @ApiOperation("根据编号查询护理项目信息")
+    public NursingProjectPageVo getNursingProjectById(@PathVariable Long id){
+        NursingProjectPageVo vo = nursingProjectService.getNursingProjectById(id);
+        return vo;
+    }
 
 
 }

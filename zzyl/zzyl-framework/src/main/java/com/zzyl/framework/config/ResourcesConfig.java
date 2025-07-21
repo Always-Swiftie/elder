@@ -1,6 +1,8 @@
 package com.zzyl.framework.config;
 
 import java.util.concurrent.TimeUnit;
+
+import com.zzyl.framework.interceptor.MemberInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,14 +23,15 @@ import com.zzyl.framework.interceptor.RepeatSubmitInterceptor;
  * @author ruoyi
  */
 @Configuration
-public class ResourcesConfig implements WebMvcConfigurer
-{
+public class ResourcesConfig implements WebMvcConfigurer {
     @Autowired
     private RepeatSubmitInterceptor repeatSubmitInterceptor;
 
+    @Autowired
+    private MemberInterceptor membersInterceptor;
+
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry)
-    {
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
         /** 本地文件上传路径 */
         registry.addResourceHandler(Constants.RESOURCE_PREFIX + "/**")
                 .addResourceLocations("file:" + RuoYiConfig.getProfile() + "/");
@@ -36,24 +39,30 @@ public class ResourcesConfig implements WebMvcConfigurer
         /** swagger配置 */
         registry.addResourceHandler("/swagger-ui/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/")
-                .setCacheControl(CacheControl.maxAge(5, TimeUnit.HOURS).cachePublic());;
+                .setCacheControl(CacheControl.maxAge(5, TimeUnit.HOURS).cachePublic());
+        ;
     }
+
+    private static final String[] EXCLUDE_PATH_PATTERNS = new String[]{
+            "/member/user/login",
+            "/member/roomTypes"
+    };
 
     /**
      * 自定义拦截规则
      */
     @Override
-    public void addInterceptors(InterceptorRegistry registry)
-    {
+    public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(repeatSubmitInterceptor).addPathPatterns("/**");
+        registry.addInterceptor(membersInterceptor).excludePathPatterns(EXCLUDE_PATH_PATTERNS).addPathPatterns("/member/**");
     }
+
 
     /**
      * 跨域配置
      */
     @Bean
-    public CorsFilter corsFilter()
-    {
+    public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         // 设置访问源地址
@@ -71,3 +80,6 @@ public class ResourcesConfig implements WebMvcConfigurer
         return new CorsFilter(source);
     }
 }
+
+
+

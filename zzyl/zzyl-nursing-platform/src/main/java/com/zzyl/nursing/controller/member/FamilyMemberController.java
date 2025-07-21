@@ -33,7 +33,7 @@ import com.zzyl.common.core.page.TableDataInfo;
  * @date 2025-07-21
  */
 @RestController
-@RequestMapping("/nursing/member")
+@RequestMapping("/member/user")
 @Api(tags =  "老人家属相关接口")
 public class FamilyMemberController extends BaseController
 {

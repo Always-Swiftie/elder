@@ -174,7 +174,7 @@ public class TokenService
      * @param claims 数据声明
      * @return 令牌
      */
-    private String createToken(Map<String, Object> claims)
+    public String createToken(Map<String, Object> claims)
     {
         String token = Jwts.builder()
                 .setClaims(claims)

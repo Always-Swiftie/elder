@@ -1,5 +1,6 @@
 package com.zzyl.nursing.domain;
 
+import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -12,7 +13,8 @@ import com.zzyl.common.core.domain.BaseEntity;
  * @author ruoyi
  * @date 2025-07-21
  */
-@Data 
+@Data
+@Builder
 public class FamilyMember extends BaseEntity
 {
     private static final long serialVersionUID = 1L;

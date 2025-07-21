@@ -90,7 +90,7 @@ public class WechatServiceImpl implements WechatService {
      * @return
      */
     private String getToken(){
-        Map<String,Object> paramMap = new HashMap<>();
+        Map<String,Object> paramMap = getAppConfig();
         //发起请求
         String result = HttpUtil.get(TOKEN_URL,paramMap);
         JSONObject jsonObject = JSONUtil.parseObj(result);

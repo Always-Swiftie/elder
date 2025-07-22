@@ -77,9 +77,9 @@ public class FamilyMemberController extends BaseController
 
     @GetMapping("/orders/project/{id}")
     @ApiOperation("根据编号查询护理项目信息")
-    public NursingProjectPageVo getNursingProjectById(@PathVariable Long id){
+    public AjaxResult getNursingProjectById(@PathVariable Long id){
         NursingProjectPageVo vo = nursingProjectService.getNursingProjectById(id);
-        return vo;
+        return success(vo);
     }
 
 

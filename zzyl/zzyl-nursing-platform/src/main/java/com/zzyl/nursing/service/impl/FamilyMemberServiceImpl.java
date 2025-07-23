@@ -2,6 +2,7 @@ package com.zzyl.nursing.service.impl;
 
 import java.sql.Wrapper;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 
@@ -261,9 +262,12 @@ public class FamilyMemberServiceImpl extends ServiceImpl<FamilyMemberMapper, Fam
     public void handelExpireReservation() {
         //查询出所有状态为0待报道 并且预约探访时间已经过了的预约信息
         List<Reservation> list = reservationMapper.selectExpireList();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         //批量更新预约状态
         for(Reservation reservation : list){
-            reservation.setStatus(3);
+            if(LocalDateTime.now().isAfter(LocalDateTime.parse( reservation.getTime(),formatter))){
+                reservation.setStatus(3);
+            }
             reservationMapper.updateExpireStatus(reservation);
         }
     }

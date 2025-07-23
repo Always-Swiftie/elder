@@ -2,10 +2,13 @@ package com.zzyl.nursing.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
+import java.util.Map;
+
 import com.zzyl.nursing.domain.FamilyMember;
 import com.zzyl.nursing.dto.ReservationDto;
 import com.zzyl.nursing.dto.UserLoginRequestDto;
 import com.zzyl.nursing.vo.LoginVO;
+import com.zzyl.nursing.vo.ReservationVo;
 
 /**
  * 老人家属Service接口
@@ -81,4 +84,10 @@ public interface IFamilyMemberService extends IService<FamilyMember>
      * @param reservationDto
      */
     void addReservation(ReservationDto reservationDto);
+
+    /**
+     * 查询当前用户的预约列表
+     * @return
+     */
+    List<ReservationVo> getReservationPage(Map<String, Object> prammap);
 }

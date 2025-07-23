@@ -21,4 +21,16 @@
         select id,name,mobile as phone,time,visitor,type,status,create_time,update_time,create_by,update_by,remark from `ry-zzyl2`.reservation
         where mobile = #{phone}
     </select>
+    <select id="pageQuery" resultType="com.zzyl.nursing.vo.ReservationVo">
+        select id,name,mobile,time,visitor,type,status,create_time,create_by,update_by,update_time,remark
+        from `ry-zzyl2`.reservation
+        <where>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="userId != null">
+                and create_by = #{userId}
+            </if>
+        </where>
+    </select>
 </mapper>

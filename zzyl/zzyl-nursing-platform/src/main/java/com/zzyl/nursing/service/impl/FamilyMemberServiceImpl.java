@@ -19,6 +19,7 @@ import com.zzyl.nursing.dto.UserLoginRequestDto;
 import com.zzyl.nursing.mapper.ReservationMapper;
 import com.zzyl.nursing.service.WechatService;
 import com.zzyl.nursing.vo.LoginVO;
+import com.zzyl.nursing.vo.ReservationVo;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -230,5 +231,17 @@ public class FamilyMemberServiceImpl extends ServiceImpl<FamilyMemberMapper, Fam
         reservation.setCreateTime(LocalDateTime.now());
         reservation.setStatus(0);
         reservationMapper.insertOne(reservation);
+    }
+
+    /**
+     * 分页查询当前用户的预约记录
+     * @param prammap
+     * @return
+     */
+    @Override
+    public List<ReservationVo> getReservationPage(Map<String, Object> prammap) {
+        Long userId = UserThreadLocal.getUserId();
+        List<ReservationVo> list = reservationMapper.pageQuery(prammap);
+        return list;
     }
 }

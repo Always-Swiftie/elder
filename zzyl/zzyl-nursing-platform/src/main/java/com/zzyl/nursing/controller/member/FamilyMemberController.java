@@ -1,32 +1,25 @@
 package com.zzyl.nursing.controller.member;
 
 import com.github.pagehelper.PageInfo;
-import com.zzyl.nursing.domain.Reservation;
-import com.zzyl.nursing.dto.NursingProjectPageDto;
+import com.zzyl.common.utils.UserThreadLocal;
 import com.zzyl.nursing.dto.ReservationDto;
 import com.zzyl.nursing.dto.UserLoginRequestDto;
-import com.zzyl.nursing.service.INursingLevelService;
 import com.zzyl.nursing.service.INursingProjectService;
 import com.zzyl.nursing.vo.LoginVO;
 import com.zzyl.nursing.vo.NursingProjectPageVo;
+import com.zzyl.nursing.vo.ReservationVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletResponse;
-import org.springframework.security.access.prepost.PreAuthorize;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.zzyl.common.annotation.Log;
 import com.zzyl.common.core.controller.BaseController;
 import com.zzyl.common.core.domain.AjaxResult;
-import com.zzyl.common.enums.BusinessType;
-import com.zzyl.nursing.domain.FamilyMember;
 import com.zzyl.nursing.service.IFamilyMemberService;
-import com.zzyl.common.utils.poi.ExcelUtil;
 import com.zzyl.common.core.page.TableDataInfo;
 
 /**
@@ -126,6 +119,31 @@ public class FamilyMemberController extends BaseController
     public AjaxResult addReservation(@RequestBody ReservationDto reservationDto){
         familyMemberService.addReservation(reservationDto);
         return AjaxResult.success();
+    }
+
+
+    @GetMapping("/reservation/page")
+    @ApiOperation("分页查询预约")
+    public AjaxResult pageQueryReservation(
+            @RequestParam("pageNum") Integer pageNum,
+            @RequestParam("pageSize") Integer pageSize,
+            @RequestParam(value = "status", required = false) Integer status
+    ){
+        startPage();
+        Map<String, Object> map = new HashMap<>();
+        map.put("userId", UserThreadLocal.getUserId());
+        if (status != null) {
+            map.put("status", status);
+        }
+
+        List<ReservationVo> list = familyMemberService.getReservationPage(map);
+        PageInfo<ReservationVo> pageInfo = new PageInfo<>(list);
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("rows", pageInfo.getList());
+        data.put("total", pageInfo.getTotal());
+
+        return AjaxResult.success("查询成功", data);
     }
 
 }

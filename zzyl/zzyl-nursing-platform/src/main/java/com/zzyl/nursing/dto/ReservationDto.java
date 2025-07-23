@@ -23,7 +23,7 @@ public class ReservationDto {
     /**
      * 预约时间
      */
-    LocalDateTime time;
+    String time;
 
     /**
      * 预约类型

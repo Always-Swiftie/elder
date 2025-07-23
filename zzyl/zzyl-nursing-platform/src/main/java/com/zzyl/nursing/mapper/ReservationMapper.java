@@ -18,4 +18,6 @@ public interface ReservationMapper extends BaseMapper<Reservation> {
 //    List<Reservation> selectByPhoneAndId(String phone, Long userId);
 
     List<Reservation> selectByPhone(String phone);
+
+    void insertOne(Reservation reservation);
 }

@@ -28,7 +28,7 @@ public class Reservation {
     /**
      * 时间
      */
-    LocalDateTime time;
+    String time;
 
     /**
      * 访客

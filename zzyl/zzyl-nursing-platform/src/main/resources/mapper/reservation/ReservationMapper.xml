@@ -3,9 +3,13 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zzyl.nursing.mapper.ReservationMapper">
+    <insert id="insertOne">
+        insert into `ry-zzyl2`.reservation (name, mobile, time, visitor, type, status, create_time, update_time, create_by, update_by, remark)
+        values (#{name},#{phone},#{time},#{visitor},#{type},#{status},#{createTime},#{updateTime},#{creatBy},#{updateBy},#{remark})
+    </insert>
 
 
-<!--    <select id="selectByNameAndId" resultType="com.zzyl.nursing.domain.Reservation">-->
+    <!--    <select id="selectByNameAndId" resultType="com.zzyl.nursing.domain.Reservation">-->
 <!--        select id,name,mobile as phone,time,visitor,type,status,create_time,update_time,create_by,update_by,remark from `ry-zzyl2`.reservation-->
 <!--        where create_by = #{userId} and name = #{name}-->
 <!--    </select>-->

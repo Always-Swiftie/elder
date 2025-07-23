@@ -228,6 +228,7 @@ public class FamilyMemberServiceImpl extends ServiceImpl<FamilyMemberMapper, Fam
         reservation.setType(reservationDto.getType());
         reservation.setCreatBy(UserThreadLocal.getUserId());
         reservation.setCreateTime(LocalDateTime.now());
-        reservationMapper.insert(reservation);
+        reservation.setStatus(0);
+        reservationMapper.insertOne(reservation);
     }
 }

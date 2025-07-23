@@ -44,6 +44,13 @@ public class FamilyMemberController extends BaseController
     @Autowired
     private INursingProjectService nursingProjectService;
 
+
+
+    /**
+     * 小程序登录
+     * @param userLoginRequestDto
+     * @return
+     */
     @PostMapping("/user/login")
     @ApiOperation("小程序登录")
     public AjaxResult login(@RequestBody UserLoginRequestDto userLoginRequestDto){
@@ -51,6 +58,14 @@ public class FamilyMemberController extends BaseController
         return AjaxResult.success(loginVO);
     }
 
+    /**
+     * 分页查询护理项目列表
+     * @param pageNum
+     * @param pageSize
+     * @param name
+     * @param status
+     * @return
+     */
     @GetMapping("/orders/project/page")
     @ApiOperation("分页查询护理项目列表")
     public TableDataInfo pageQueryProject(
@@ -75,12 +90,30 @@ public class FamilyMemberController extends BaseController
         return getDataTable(list);
     }
 
+    /**
+     * 根据编号查询单个护理项目详情
+     * @param id
+     * @return
+     */
     @GetMapping("/orders/project/{id}")
     @ApiOperation("根据编号查询护理项目信息")
     public AjaxResult getNursingProjectById(@PathVariable Long id){
         NursingProjectPageVo vo = nursingProjectService.getNursingProjectById(id);
         return success(vo);
     }
+
+    /**
+     * 查询取消预约数量
+     * @param
+     * @return
+     */
+    @GetMapping("/reservation/cancelled-count")
+    @ApiOperation("查询取消预约数量")
+    public AjaxResult getCancelledCount(){
+        Integer cancelledCount = familyMemberService.getCancelledCount();
+        return AjaxResult.success(cancelledCount);
+    }
+
 
 
 }

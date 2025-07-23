@@ -68,4 +68,10 @@ public interface IFamilyMemberService extends IService<FamilyMember>
      * @return
      */
     LoginVO login(UserLoginRequestDto userLoginRequestDto);
+
+    /**
+     * 获取当前用户本日预约取消数量
+     * @return
+     */
+    Integer getCancelledCount();
 }

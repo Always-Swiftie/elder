@@ -10,10 +10,14 @@ import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.zzyl.common.utils.DateUtils;
 import com.zzyl.common.utils.StringUtils;
+import com.zzyl.common.utils.UserThreadLocal;
 import com.zzyl.framework.web.service.TokenService;
+import com.zzyl.nursing.domain.Reservation;
 import com.zzyl.nursing.dto.UserLoginRequestDto;
+import com.zzyl.nursing.mapper.ReservationMapper;
 import com.zzyl.nursing.service.WechatService;
 import com.zzyl.nursing.vo.LoginVO;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.zzyl.nursing.mapper.FamilyMemberMapper;
@@ -35,6 +39,9 @@ public class FamilyMemberServiceImpl extends ServiceImpl<FamilyMemberMapper, Fam
 {
     @Autowired
     private FamilyMemberMapper familyMemberMapper;
+
+    @Autowired
+    private ReservationMapper reservationMapper;
 
     @Autowired
     private WechatService wechatService;
@@ -180,5 +187,33 @@ public class FamilyMemberServiceImpl extends ServiceImpl<FamilyMemberMapper, Fam
                 + StringUtils.substring(member.getPhone(), 7);
         member.setName(nickName);
         save(member);
+    }
+
+    /**
+     * 获取当前用户本日预约取消数量
+     * @return
+     */
+    @Override
+    public Integer getCancelledCount() {
+        Long userId = UserThreadLocal.getUserId();
+        //需要根据userId查到预约人的name,phone 作为唯一索引定位reservation表中的记录
+        FamilyMember familyMember = familyMemberMapper.selectFamilyMemberById(userId);
+        String phone = familyMember.getPhone();
+        String name = familyMember.getName();
+        //查询当前预约用户
+        List<Reservation> reservationList = reservationMapper.selectList(Wrappers.<Reservation>lambdaQuery()
+                .eq(Reservation::getName, name)
+                .eq(Reservation::getPhone, phone));
+        //统计状态
+        if(ObjectUtils.isEmpty(reservationList)){
+            throw new RuntimeException("当前用户无预约预约信息!");
+        }
+        Integer count = 0;
+        for(Reservation reservation : reservationList){
+            if(reservation.getStatus() == 2){
+                count++;
+            }
+        }
+        return count;
     }
 }

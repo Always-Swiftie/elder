@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+/**
+ * @author 20784
+ */
 @Component("contractJob")
 @Slf4j
 public class ContractJob {

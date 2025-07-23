@@ -96,4 +96,9 @@ public interface IFamilyMemberService extends IService<FamilyMember>
      * @param id
      */
     void cancelReservation(Integer id);
+
+    /**
+     * 定时处理过时预约
+     */
+    void handelExpireReservation();
 }

@@ -10,6 +10,9 @@
     <update id="cancelById">
         update `ry-zzyl2`.reservation set status = 2 where id = #{id}
     </update>
+    <update id="updateExpireStatus">
+        update `ry-zzyl2`.reservation set status = 3 where id = #{id}
+    </update>
 
 
     <!--    <select id="selectByNameAndId" resultType="com.zzyl.nursing.domain.Reservation">-->
@@ -35,5 +38,10 @@
                 and create_by = #{userId}
             </if>
         </where>
+    </select>
+
+    <select id="selectExpireList" resultType="com.zzyl.nursing.domain.Reservation">
+        select id,name,mobile as phone,time,visitor,type,status,create_time,update_time,create_by,update_by,remark from `ry-zzyl2`.reservation
+        where status = 0 and time &lt; now()
     </select>
 </mapper>

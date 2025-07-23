@@ -27,4 +27,8 @@ public interface ReservationMapper extends BaseMapper<Reservation> {
     List<ReservationVo> pageQuery(Map<String, Object> prammap);
 
     void cancelById(Integer id);
+
+    List<Reservation> selectExpireList();
+
+    void updateExpireStatus(Reservation reservation);
 }

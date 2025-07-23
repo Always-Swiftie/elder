@@ -253,4 +253,18 @@ public class FamilyMemberServiceImpl extends ServiceImpl<FamilyMemberMapper, Fam
     public void cancelReservation(Integer id) {
         reservationMapper.cancelById(id);
     }
+
+    /**
+     * 定时处理过时预约
+     */
+    @Override
+    public void handelExpireReservation() {
+        //查询出所有状态为0待报道 并且预约探访时间已经过了的预约信息
+        List<Reservation> list = reservationMapper.selectExpireList();
+        //批量更新预约状态
+        for(Reservation reservation : list){
+            reservation.setStatus(3);
+            reservationMapper.updateExpireStatus(reservation);
+        }
+    }
 }

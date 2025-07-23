@@ -1,7 +1,9 @@
 package com.zzyl.nursing.controller.member;
 
 import com.github.pagehelper.PageInfo;
+import com.zzyl.nursing.domain.Reservation;
 import com.zzyl.nursing.dto.NursingProjectPageDto;
+import com.zzyl.nursing.dto.ReservationDto;
 import com.zzyl.nursing.dto.UserLoginRequestDto;
 import com.zzyl.nursing.service.INursingLevelService;
 import com.zzyl.nursing.service.INursingProjectService;
@@ -114,6 +116,16 @@ public class FamilyMemberController extends BaseController
         return AjaxResult.success(cancelledCount);
     }
 
-
+    /**
+     * 新增预约
+     * @param reservationDto
+     * @return
+     */
+    @PostMapping("/reservation")
+    @ApiOperation("新增预约")
+    public AjaxResult addReservation(@RequestBody ReservationDto reservationDto){
+        familyMemberService.addReservation(reservationDto);
+        return AjaxResult.success();
+    }
 
 }

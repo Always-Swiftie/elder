@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzyl.nursing.mapper.ReservationMapper">
+
+
+<!--    <select id="selectByNameAndId" resultType="com.zzyl.nursing.domain.Reservation">-->
+<!--        select id,name,mobile as phone,time,visitor,type,status,create_time,update_time,create_by,update_by,remark from `ry-zzyl2`.reservation-->
+<!--        where create_by = #{userId} and name = #{name}-->
+<!--    </select>-->
+<!--    <select id="selectByPhoneAndId" resultType="com.zzyl.nursing.domain.Reservation">-->
+<!--        select id,name,mobile as phone,time,visitor,type,status,create_time,update_time,create_by,update_by,remark from `ry-zzyl2`.reservation-->
+<!--        where create_by = #{userId} and mobile = #{phone}-->
+<!--    </select>-->
+    <select id="selectByPhone" resultType="com.zzyl.nursing.domain.Reservation">
+        select id,name,mobile as phone,time,visitor,type,status,create_time,update_time,create_by,update_by,remark from `ry-zzyl2`.reservation
+        where mobile = #{phone}
+    </select>
+</mapper>

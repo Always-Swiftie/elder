@@ -1,6 +1,7 @@
 package com.zzyl.nursing.service.impl;
 
 import java.sql.Wrapper;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -13,11 +14,13 @@ import com.zzyl.common.utils.StringUtils;
 import com.zzyl.common.utils.UserThreadLocal;
 import com.zzyl.framework.web.service.TokenService;
 import com.zzyl.nursing.domain.Reservation;
+import com.zzyl.nursing.dto.ReservationDto;
 import com.zzyl.nursing.dto.UserLoginRequestDto;
 import com.zzyl.nursing.mapper.ReservationMapper;
 import com.zzyl.nursing.service.WechatService;
 import com.zzyl.nursing.vo.LoginVO;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.zzyl.nursing.mapper.FamilyMemberMapper;
@@ -196,18 +199,12 @@ public class FamilyMemberServiceImpl extends ServiceImpl<FamilyMemberMapper, Fam
     @Override
     public Integer getCancelledCount() {
         Long userId = UserThreadLocal.getUserId();
-        //需要根据userId查到预约人的name,phone 作为唯一索引定位reservation表中的记录
+        //需要根据userId查到预约人的name,Userid 作为唯一索引定位reservation表中的记录
         FamilyMember familyMember = familyMemberMapper.selectFamilyMemberById(userId);
         String phone = familyMember.getPhone();
-        String name = familyMember.getName();
-        //查询当前预约用户
-        List<Reservation> reservationList = reservationMapper.selectList(Wrappers.<Reservation>lambdaQuery()
-                .eq(Reservation::getName, name)
-                .eq(Reservation::getPhone, phone));
+        //查询当前预约用户(根据业务实际要求,应该把预约手机号当做唯一约束)
+        List<Reservation> reservationList = reservationMapper.selectByPhone(phone);
         //统计状态
-        if(ObjectUtils.isEmpty(reservationList)){
-            throw new RuntimeException("当前用户无预约预约信息!");
-        }
         Integer count = 0;
         for(Reservation reservation : reservationList){
             if(reservation.getStatus() == 2){
@@ -215,5 +212,22 @@ public class FamilyMemberServiceImpl extends ServiceImpl<FamilyMemberMapper, Fam
             }
         }
         return count;
+    }
+
+    /**
+     * 新增预约
+     * @param reservationDto
+     */
+    @Override
+    public void addReservation(ReservationDto reservationDto) {
+        Reservation reservation = new Reservation();
+        reservation.setPhone(reservationDto.getMobile());
+        reservation.setName(reservationDto.getName());
+        reservation.setTime(reservationDto.getTime());
+        reservation.setVisitor(reservationDto.getVisitor());
+        reservation.setType(reservationDto.getType());
+        reservation.setCreatBy(UserThreadLocal.getUserId());
+        reservation.setCreateTime(LocalDateTime.now());
+        reservationMapper.insert(reservation);
     }
 }

@@ -3,6 +3,7 @@ package com.zzyl.nursing.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 import com.zzyl.nursing.domain.FamilyMember;
+import com.zzyl.nursing.dto.ReservationDto;
 import com.zzyl.nursing.dto.UserLoginRequestDto;
 import com.zzyl.nursing.vo.LoginVO;
 
@@ -74,4 +75,10 @@ public interface IFamilyMemberService extends IService<FamilyMember>
      * @return
      */
     Integer getCancelledCount();
+
+    /**
+     * 新增预约
+     * @param reservationDto
+     */
+    void addReservation(ReservationDto reservationDto);
 }

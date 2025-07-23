@@ -90,4 +90,10 @@ public interface IFamilyMemberService extends IService<FamilyMember>
      * @return
      */
     List<ReservationVo> getReservationPage(Map<String, Object> prammap);
+
+    /**
+     * 用户取消预约
+     * @param id
+     */
+    void cancelReservation(Integer id);
 }

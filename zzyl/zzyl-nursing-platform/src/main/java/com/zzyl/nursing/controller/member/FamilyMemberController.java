@@ -121,7 +121,13 @@ public class FamilyMemberController extends BaseController
         return AjaxResult.success();
     }
 
-
+    /**
+     * 分页查询预约
+     * @param pageNum
+     * @param pageSize
+     * @param status
+     * @return
+     */
     @GetMapping("/reservation/page")
     @ApiOperation("分页查询预约")
     public AjaxResult pageQueryReservation(
@@ -144,6 +150,14 @@ public class FamilyMemberController extends BaseController
         data.put("total", pageInfo.getTotal());
 
         return AjaxResult.success("查询成功", data);
+    }
+
+
+    @PutMapping("/reservation/{id}/cancel")
+    @ApiOperation("用户取消预约")
+    public AjaxResult cancelReservation(@PathVariable Integer id){
+        familyMemberService.cancelReservation(id);
+        return AjaxResult.success();
     }
 
 }

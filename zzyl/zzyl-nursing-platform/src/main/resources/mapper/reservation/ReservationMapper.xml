@@ -7,6 +7,9 @@
         insert into `ry-zzyl2`.reservation (name, mobile, time, visitor, type, status, create_time, update_time, create_by, update_by, remark)
         values (#{name},#{phone},#{time},#{visitor},#{type},#{status},#{createTime},#{updateTime},#{creatBy},#{updateBy},#{remark})
     </insert>
+    <update id="cancelById">
+        update `ry-zzyl2`.reservation set status = 2 where id = #{id}
+    </update>
 
 
     <!--    <select id="selectByNameAndId" resultType="com.zzyl.nursing.domain.Reservation">-->

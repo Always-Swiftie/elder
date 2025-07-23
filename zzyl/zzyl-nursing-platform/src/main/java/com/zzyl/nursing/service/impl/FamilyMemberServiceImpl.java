@@ -244,4 +244,13 @@ public class FamilyMemberServiceImpl extends ServiceImpl<FamilyMemberMapper, Fam
         List<ReservationVo> list = reservationMapper.pageQuery(prammap);
         return list;
     }
+
+    /**
+     * 用户取消预约
+     * @param id 预约主键id
+     */
+    @Override
+    public void cancelReservation(Integer id) {
+        reservationMapper.cancelById(id);
+    }
 }

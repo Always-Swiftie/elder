@@ -212,3 +212,16 @@ baidu:
   accessKey: ALTAKLpiIrrnPAkH9jrRUguuYW
   secretKey: 56a005a13ecb4a8392ef8255fe68d559
   qianfanModel: ERNIE-4.0-8K-Preview
+
+huaweicloud:
+  ak: HPUAKNU1MUGBAVPXJZ0Z
+  sk: 2gfJfm4DSFZcUOj1YZnHYDrJXu2LMpAFkJkV5mPm
+  #如果是上海一，请填写"cn-east-3"；如果是北京四，请填写"cn-north-4";
+  regionId: cn-south-1
+  endpoint: 81fa235c86.st1.iotda-app.cn-south-1.myhuaweicloud.com
+  projectId: 1208c64faa774c7cb11066826c1efcc0
+  #amqp相关配置 第二天课程接收设备数据使用
+  host: 81fa235c86.st1.iotda-app.cn-south-1.myhuaweicloud.com
+  accessKey: sj8vhgxj
+  accessCode: 3eD7OnAlVxgYtMZKN1DiKytGvoBYQyr4
+  queueName: DefaultQueue   #默认无需改动

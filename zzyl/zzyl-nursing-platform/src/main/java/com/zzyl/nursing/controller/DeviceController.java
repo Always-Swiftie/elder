@@ -51,65 +51,26 @@ public class DeviceController extends BaseController
         return getDataTable(list);
     }
 
-//    /**
-//     * 导出Device列表
-//     */
-//    @PreAuthorize("@ss.hasPermi('nursing:device:export')")
-//    @Log(title = "Device", businessType = BusinessType.EXPORT)
-//    @PostMapping("/export")
-//    @ApiOperation("导出Device列表")
-//    public void export(HttpServletResponse response, Device device)
-//    {
-//        List<Device> list = deviceService.selectDeviceList(device);
-//        ExcelUtil<Device> util = new ExcelUtil<Device>(Device.class);
-//        util.exportExcel(response, list, "Device数据");
-//    }
-//
-//    /**
-//     * 获取Device详细信息
-//     */
-//    @PreAuthorize("@ss.hasPermi('nursing:device:query')")
-//    @GetMapping(value = "/{id}")
-//    @ApiOperation("获取Device详细信息")
-//    public AjaxResult getInfo(@ApiParam(value = "DeviceID", required = true)
-//            @PathVariable("id") Long id)
-//    {
-//        return success(deviceService.selectDeviceById(id));
-//    }
-//
-//    /**
-//     * 新增Device
-//     */
-//    @PreAuthorize("@ss.hasPermi('nursing:device:add')")
-//    @Log(title = "Device", businessType = BusinessType.INSERT)
-//    @PostMapping
-//    @ApiOperation("新增Device")
-//    public AjaxResult add(@ApiParam(value = "Device实体", required = true) @RequestBody Device device)
-//    {
-//        return toAjax(deviceService.insertDevice(device));
-//    }
-//
-//    /**
-//     * 修改Device
-//     */
-//    @PreAuthorize("@ss.hasPermi('nursing:device:edit')")
-//    @Log(title = "Device", businessType = BusinessType.UPDATE)
-//    @PutMapping
-//    @ApiOperation("修改Device")
-//    public AjaxResult edit(@ApiParam(value = "Device实体", required = true)  @RequestBody Device device)
-//    {
-//        return toAjax(deviceService.updateDevice(device));
-//    }
-//
-//    /**
-//     * 删除Device
-//     */
-//    @PreAuthorize("@ss.hasPermi('nursing:device:remove')")
-//    @Log(title = "Device", businessType = BusinessType.DELETE)
-//	@DeleteMapping("/{ids}")
-//    @ApiOperation("删除Device")
-//    public AjaxResult remove(@PathVariable Long[] ids)
-//    {
-//        return toAjax(deviceService.deleteDeviceByIds(ids));
-//    }
+    /**
+     * 同步产品列表
+     * @return
+     */
+    @PostMapping("/syncProductList")
+    @ApiOperation(value = "从物联网平台同步产品列表")
+    public AjaxResult syncProductList() {
+        deviceService.syncProductList();
+        return success();
+    }
+
+    /**
+     * 查询所有产品列表
+     * @return
+     */
+    @GetMapping("/allProduct")
+    @ApiOperation(value = "查询所有产品列表")
+    public AjaxResult allProduct() {
+        return success(deviceService.allProduct());
+    }
+
+
 }

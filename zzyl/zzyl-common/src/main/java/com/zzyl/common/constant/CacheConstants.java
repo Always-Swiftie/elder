@@ -41,4 +41,9 @@ public class CacheConstants
      * 登录账户密码错误次数 redis key
      */
     public static final String PWD_ERR_CNT_KEY = "pwd_err_cnt:";
+
+    /**
+     * 华为云IoT平台 redis缓存key
+     */
+    public static final String ALL_PRODUCT_KEY = "iot:all_product";
 }

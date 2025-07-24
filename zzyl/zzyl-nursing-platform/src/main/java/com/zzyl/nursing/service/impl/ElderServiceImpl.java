@@ -1,6 +1,12 @@
 package com.zzyl.nursing.service.impl;
 
 import java.util.List;
+
+import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zzyl.common.constant.HttpStatus;
+import com.zzyl.common.core.page.TableDataInfo;
 import com.zzyl.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -95,5 +101,44 @@ public class ElderServiceImpl extends ServiceImpl<ElderMapper, Elder> implements
     public int deleteElderById(Long id)
     {
         return removeById(id) == true ? 1 : 0;
+    }
+
+    /**
+     * 老人分页查询
+     * @param status
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public TableDataInfo pageQuery(Integer status, Integer pageNum, Integer pageSize) {
+        LambdaQueryWrapper<Elder> queryWrapper = new LambdaQueryWrapper<Elder>();
+        //创建分页对象
+        Page<Elder> page = new Page<>(pageNum, pageSize);
+        //按照状态查询
+        if(ObjectUtil.isNotNull(status)){
+            queryWrapper.eq(Elder::getStatus, status);
+        }
+        //sql返回结果，保留哪些字段
+        queryWrapper.select(Elder::getId, Elder::getName, Elder::getIdCardNo, Elder::getBedNumber);
+        //执行查询
+        page = page(page, queryWrapper);
+        //返回分页结果
+        return getDataTable(page);
+    }
+
+    /**
+     * 封装分页结果
+     * @param page
+     * @return
+     */
+    private TableDataInfo getDataTable(Page<Elder> page) {
+        //封装分页结果
+        TableDataInfo tableDataInfo = new TableDataInfo();
+        tableDataInfo.setTotal(page.getTotal());
+        tableDataInfo.setCode(HttpStatus.SUCCESS);
+        tableDataInfo.setMsg("请求成功");
+        tableDataInfo.setRows(page.getRecords());
+        return tableDataInfo;
     }
 }

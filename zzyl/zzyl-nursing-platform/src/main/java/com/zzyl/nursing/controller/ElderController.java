@@ -112,4 +112,17 @@ public class ElderController extends BaseController
     {
         return toAjax(elderService.deleteElderByIds(ids));
     }
+
+    /**
+     * 老人分页查询
+     * @param status
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("/pageQuery")
+    @ApiOperation(value = "老人分页查询")
+    public TableDataInfo pageQuery(Integer pageSize, Integer pageNum, Integer status) {
+        return  elderService.pageQuery(status, pageNum, pageSize);
+    }
 }

@@ -1,17 +1,22 @@
 package com.zzyl.nursing.service.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.*;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huaweicloud.sdk.iotda.v5.IoTDAClient;
-import com.huaweicloud.sdk.iotda.v5.model.ListProductsRequest;
-import com.huaweicloud.sdk.iotda.v5.model.ListProductsResponse;
+import com.huaweicloud.sdk.iotda.v5.model.*;
 import com.zzyl.common.constant.CacheConstants;
 import com.zzyl.common.exception.base.BaseException;
 import com.zzyl.common.utils.DateUtils;
 import com.zzyl.common.utils.StringUtils;
+import com.zzyl.nursing.dto.DeviceDto;
 import com.zzyl.nursing.vo.ProductPageVo;
 import com.zzyl.nursing.vo.ProductVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +28,6 @@ import com.zzyl.nursing.service.IDeviceService;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.web.servlet.ThemeResolver;
-
-import java.util.Arrays;
 
 /**
  * DeviceService业务层处理
@@ -160,5 +163,112 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
             productPageVoList.add(productPageVo);
         }
         return productPageVoList;
+    }
+
+    /**
+     * 注册设备
+     * @param deviceDto
+     */
+    @Override
+    public void registerDevice(DeviceDto deviceDto) {
+        //判断设备名称是否重复
+        LambdaQueryWrapper<Device> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Device::getDeviceName, deviceDto.getDeviceName());
+        if(count(queryWrapper) > 0){
+            throw new BaseException("设备名称已存在，请重新输入");
+        }
+        //检验设备标识码是否重复
+        LambdaQueryWrapper<Device> queryWrapperNodeId = new LambdaQueryWrapper<>();
+        queryWrapperNodeId.eq(Device::getNodeId, deviceDto.getNodeId());
+        if(count(queryWrapperNodeId) > 0){
+            throw new BaseException("设备标识码已存在，请重新输入");
+        }
+
+        //校验同一位置是否绑定了同一类产品
+        LambdaQueryWrapper<Device> condition = new LambdaQueryWrapper<>();
+        condition.eq(Device::getProductKey, deviceDto.getProductKey())
+                .eq(Device::getLocationType, deviceDto.getLocationType())
+                .eq(Device::getPhysicalLocationType, deviceDto.getPhysicalLocationType())
+                .eq(Device::getBindingLocation, deviceDto.getBindingLocation());
+        if (count(condition) > 0) {
+            throw new BaseException("该老人/位置已绑定该产品，请重新选择");
+        }
+
+        String nodeId = UUID.randomUUID() + deviceDto.getProductKey();
+        deviceDto.setNodeId(nodeId);
+
+        //iot中新增设备
+        AddDeviceRequest request = new AddDeviceRequest();
+        AddDevice body = new AddDevice();
+        body.withProductId(deviceDto.getProductKey());
+        body.withDeviceName(deviceDto.getDeviceName());
+        body.withNodeId(deviceDto.getNodeId());
+        request.withBody(body);
+        AuthInfo authInfo = new AuthInfo();
+        //秘钥
+        String secret = UUID.randomUUID().toString().replaceAll("-", "");
+        authInfo.withSecret(secret);
+        body.setAuthInfo(authInfo);
+        AddDeviceResponse response;
+        try {
+            response = ioTDAClient.addDevice(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException("物联网接口 - 注册设备，调用失败");
+        }
+
+        //设备数据保存到数据库
+        //属性拷贝
+        Device device = BeanUtil.toBean(deviceDto, Device.class);
+        //设备id、设备绑定状态
+        device.setIotId(response.getDeviceId());
+        //秘钥
+        device.setSecret(secret);
+        //根据device对象的
+        String jsonStr =  redisTemplate.opsForValue().get(CacheConstants.ALL_PRODUCT_KEY);
+        if(!StringUtils.isEmpty(jsonStr)){
+            device.setProductName(getNameByProductId(jsonStr,deviceDto.getProductKey()));
+        }
+        //在数据库中新增设备
+        deviceMapper.insert(device);
+    }
+
+    // ObjectMapper 是 Jackson 的核心类，用于 JSON 和 Java 对象之间的转换
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
+    /**
+     * 根据 productId 从 JSON 字符串中获取对应的 name。
+     * @param jsonString 包含产品信息的 JSON 数组字符串
+     * @param targetProductId 目标 productId
+     * @return 匹配的 name 字符串，如果未找到则返回 null
+     */
+    private static String getNameByProductId(String jsonString, String targetProductId) {
+        try {
+            // 将 JSON 字符串解析为 JsonNode
+            JsonNode rootNode = objectMapper.readTree(jsonString);
+
+            // 检查根节点是否是数组
+            if (rootNode.isArray()) {
+                // 遍历数组中的每个 JSON 对象
+                for (JsonNode node : rootNode) {
+                    // 检查当前节点是否包含 "productId" 和 "name" 字段
+                    if (node.has("productId") && node.has("name")) {
+                        // 获取 productId 的文本值
+                        String productId = node.get("productId").asText();
+
+                        // 如果 productId 匹配，则返回对应的 name
+                        if (productId.equals(targetProductId)) {
+                            return node.get("name").asText();
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            // 处理 JSON 解析或 IO 错误
+            System.err.println("JSON 解析错误: " + e.getMessage());
+            e.printStackTrace();
+        }
+        // 如果未找到匹配项或发生错误
+        return null;
     }
 }

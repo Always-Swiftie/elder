@@ -3,6 +3,7 @@ package com.zzyl.nursing.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 import com.zzyl.nursing.domain.Device;
+import com.zzyl.nursing.dto.DeviceDto;
 import com.zzyl.nursing.vo.ProductPageVo;
 import com.zzyl.nursing.vo.ProductVo;
 
@@ -72,4 +73,10 @@ public interface IDeviceService extends IService<Device>
      * @return
      */
     List<ProductPageVo> allProduct();
+
+    /**
+     * 注册设备
+     * @param deviceDto
+     */
+    void registerDevice(DeviceDto deviceDto);
 }

@@ -13,7 +13,7 @@ import com.zzyl.common.core.domain.BaseEntity;
  * @date 2025-07-24
  */
 @Data 
-public class Device extends BaseEntity
+public class    Device extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
@@ -59,5 +59,15 @@ public class Device extends BaseEntity
     /** 产品是否包含门禁，0：否，1：是 */
     @Excel(name = "产品是否包含门禁，0：否，1：是")
     private Integer haveEntranceGuard;
+
+    /**
+     * 密钥
+     */
+    private String secret;
+
+    /**
+     * 识别码
+     */
+    private String nodeId;
 
 }

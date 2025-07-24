@@ -1,5 +1,6 @@
 package com.zzyl.nursing.controller;
 
+import com.zzyl.nursing.dto.DeviceDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -70,6 +71,13 @@ public class DeviceController extends BaseController
     @ApiOperation(value = "查询所有产品列表")
     public AjaxResult allProduct() {
         return success(deviceService.allProduct());
+    }
+
+    @PostMapping("/register")
+    @ApiOperation(value = "注册设备")
+    public AjaxResult registerDevice(@RequestBody DeviceDto deviceDto){
+        deviceService.registerDevice(deviceDto);
+        return success();
     }
 
 

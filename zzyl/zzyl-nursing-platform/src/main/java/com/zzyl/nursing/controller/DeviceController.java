@@ -1,9 +1,10 @@
 package com.zzyl.nursing.controller;
 
 import com.zzyl.nursing.dto.DeviceDto;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import com.zzyl.nursing.dto.DeviceInfoQueryDto;
+import com.zzyl.nursing.vo.DeviceInfo;
+import io.swagger.annotations.*;
+
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -73,12 +74,29 @@ public class DeviceController extends BaseController
         return success(deviceService.allProduct());
     }
 
+    /**
+     * 注册设备
+     * @param deviceDto
+     * @return
+     */
     @PostMapping("/register")
     @ApiOperation(value = "注册设备")
     public AjaxResult registerDevice(@RequestBody DeviceDto deviceDto){
         deviceService.registerDevice(deviceDto);
         return success();
     }
+
+    /**
+     * 获取设备详细信息
+     */
+    @PostMapping("/queryDeviceDetail")
+    @ApiOperation("获取设备详细信息")
+    public AjaxResult getInfo(@RequestBody DeviceInfoQueryDto  deviceInfoQueryDto) {
+        String iotId = deviceInfoQueryDto.getIotId();
+        return success(deviceService.queryDeviceDetail(iotId));
+    }
+
+
 
 
 }

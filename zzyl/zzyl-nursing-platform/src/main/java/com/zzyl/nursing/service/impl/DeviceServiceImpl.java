@@ -2,11 +2,19 @@ package com.zzyl.nursing.service.impl;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.LocalDateTimeUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,8 +25,10 @@ import com.zzyl.common.exception.base.BaseException;
 import com.zzyl.common.utils.DateUtils;
 import com.zzyl.common.utils.StringUtils;
 import com.zzyl.nursing.dto.DeviceDto;
+import com.zzyl.nursing.vo.DeviceDetailVo;
 import com.zzyl.nursing.vo.ProductPageVo;
 import com.zzyl.nursing.vo.ProductVo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -36,6 +46,7 @@ import org.springframework.web.servlet.ThemeResolver;
  * @date 2025-07-24
  */
 @Service
+@Slf4j
 public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> implements IDeviceService
 {
     @Autowired
@@ -271,4 +282,61 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         // 如果未找到匹配项或发生错误
         return null;
     }
+
+    /**
+     * 查询设备详情
+     *
+     * @return
+     */
+    @Override
+    public DeviceDetailVo queryDeviceDetail(String iotId) {
+        // 查询数据库
+        Device device = getOne(Wrappers.<Device>lambdaQuery().eq(Device::getIotId, iotId));
+        if (ObjectUtil.isEmpty(device)) {
+            return null;
+        }
+
+        // 调用华为云物联网接口
+        ShowDeviceRequest request = new ShowDeviceRequest();
+        request.setDeviceId(iotId);
+        ShowDeviceResponse response;
+        try {
+            response = ioTDAClient.showDevice(request);
+        } catch (Exception e) {
+            log.info("物联网接口 - 查询设备详情，调用失败:{}", e.getMessage());
+            throw new BaseException("物联网接口 - 查询设备详情，调用失败");
+        }
+
+        // 属性拷贝
+        DeviceDetailVo deviceVo = BeanUtil.toBean(device, DeviceDetailVo.class);
+        deviceVo.setDeviceStatus(response.getStatus());
+
+        String jsonStr = redisTemplate.opsForValue().get(CacheConstants.ALL_PRODUCT_KEY);
+        deviceVo.setProductName(getNameByProductId(jsonStr, deviceVo.getProductKey()));
+
+        // 日期格式化工具
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        // 处理 activeTime
+        String activeTimeStr = response.getActiveTime();
+        if (StringUtils.isNotEmpty(activeTimeStr)) {
+            LocalDateTime activeTime = LocalDateTimeUtil.parse(activeTimeStr, DatePattern.UTC_MS_PATTERN);
+            activeTime = activeTime.atZone(ZoneOffset.UTC)
+                    .withZoneSameInstant(ZoneId.of("Asia/Shanghai"))
+                    .toLocalDateTime();
+            deviceVo.setActiveTime(activeTime.format(formatter));
+        }
+
+        // 如果你还希望设置 createTime 也为字符串（取自 device.getCreateTime()）
+        if (device.getCreateTime() != null) {
+            LocalDateTime createTime = device.getCreateTime()
+                    .toInstant()
+                    .atZone(ZoneId.of("Asia/Shanghai"))
+                    .toLocalDateTime();
+            deviceVo.setCreateTime(createTime.format(formatter));
+        }
+
+        return deviceVo;
+    }
+
 }

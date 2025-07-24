@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 import com.zzyl.nursing.domain.Device;
 import com.zzyl.nursing.dto.DeviceDto;
+import com.zzyl.nursing.vo.DeviceDetailVo;
 import com.zzyl.nursing.vo.ProductPageVo;
 import com.zzyl.nursing.vo.ProductVo;
 
@@ -79,4 +80,11 @@ public interface IDeviceService extends IService<Device>
      * @param deviceDto
      */
     void registerDevice(DeviceDto deviceDto);
+
+    /**
+     * 查询设备详情
+     * @param iotId
+     * @return
+     */
+    DeviceDetailVo queryDeviceDetail(String iotId);
 }

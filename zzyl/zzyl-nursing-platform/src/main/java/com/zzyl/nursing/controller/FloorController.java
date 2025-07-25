@@ -7,6 +7,7 @@ import com.zzyl.common.core.domain.R;
 import com.zzyl.common.enums.BusinessType;
 import com.zzyl.nursing.domain.Floor;
 import com.zzyl.nursing.service.IFloorService;
+import com.zzyl.nursing.vo.FloorVo;
 import com.zzyl.nursing.vo.TreeVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -97,9 +98,9 @@ public class FloorController extends BaseController
     }
 
     @GetMapping("/getAllFloorsWithDevice")
-    @ApiOperation("获取包含智能设备的楼层")
-    public AjaxResult getAllFloorsWithDevice(){
-        return success(floorService.getAllFloorsWithDevice());
+    @ApiOperation("查询所有楼层（智能设备）")
+    public R<List<FloorVo>> getAllFloorsWithDevice() {
+        return R.ok(floorService.getAllFloorsWithDevice());
     }
 
     @GetMapping("/getAllFloorsWithNur")

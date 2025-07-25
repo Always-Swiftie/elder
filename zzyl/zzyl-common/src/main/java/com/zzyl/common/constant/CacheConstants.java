@@ -46,4 +46,6 @@ public class CacheConstants
      * 华为云IoT平台 redis缓存key
      */
     public static final String ALL_PRODUCT_KEY = "iot:all_product";
+
+    public static final String IOT_DEVICE_LAST_DATA = "iot:device_last_data";
 }

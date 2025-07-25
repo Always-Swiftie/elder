@@ -111,7 +111,8 @@ public class RoomController extends BaseController
     }
 
     @GetMapping("/getRoomsWithDeviceByFloorId/{floorId}")
-    public AjaxResult getRoomsWithDeviceByFloorId(@PathVariable Long floorId){
-        return AjaxResult.success(roomService.getRoomsWithDeviceByFloorId(floorId));
+    @ApiOperation("获取所有房间（智能床位）")
+    public R<List<RoomVo>> getRoomsWithDeviceByFloorId(@PathVariable(name = "floorId") Long floorId){
+        return R.ok(roomService.getRoomsWithDeviceByFloorId(floorId));
     }
 }

@@ -127,32 +127,32 @@ public class RoomServiceImpl extends ServiceImpl<RoomMapper, Room> implements IR
      */
     @Override
     public List<RoomVo> getRoomsWithDeviceByFloorId(Long floorId) {
-////        redisTemplate.opsForHash().get(CacheConstants.IOT_DEVICE_LAST_DATA,"");
-//        //SQL返回的数据是基础数据，找到的是房间、床位、设备（房间|床位）
-//        List<RoomVo> roomVos = roomMapper.getRoomsWithDeviceByFloorId(floorId);
-//        roomVos.forEach(roomVo->{
-//            //遍历的是房间数据
-//            List<DeviceInfo> deviceVos = roomVo.getDeviceVos();
-//            //房间设备所对应的设备上报的数据
-//            deviceVos.forEach(deviceInfo -> {
-//                String jsonStr = (String) redisTemplate.opsForHash().get(CacheConstants.IOT_DEVICE_LAST_DATA, deviceInfo.getIotId());
-//                if(StringUtils.isEmpty(jsonStr)){
-//                    return;//跳出本次循环，并不是结束方法
-//                }
-//                deviceInfo.setDeviceDataVos(JSONUtil.toList(jsonStr, DeviceData.class));
-//            });
-//            //遍历的是床位数据
-//            roomVo.getBedVoList().forEach(bedVo -> {
-//                //获取床位对应的设备列表
-//                bedVo.getDeviceVos().forEach(deviceInfo -> {
-//                    String jsonStr = (String) redisTemplate.opsForHash().get(CacheConstants.IOT_DEVICE_LAST_DATA, deviceInfo.getIotId());
-//                    if(StringUtils.isEmpty(jsonStr)){
-//                        return;//跳出本次循环，并不是结束方法
-//                    }
-//                    deviceInfo.setDeviceDataVos(JSONUtil.toList(jsonStr, DeviceData.class));
-//                });
-//            });
-//        });
-        return null;
+//        redisTemplate.opsForHash().get(CacheConstants.IOT_DEVICE_LAST_DATA,"");
+        //SQL返回的数据是基础数据，找到的是房间、床位、设备（房间|床位）
+        List<RoomVo> roomVos = roomMapper.getRoomsWithDeviceByFloorId(floorId);
+        roomVos.forEach(roomVo->{
+            //遍历的是房间数据
+            List<DeviceInfo> deviceVos = roomVo.getDeviceVos();
+            //房间设备所对应的设备上报的数据
+            deviceVos.forEach(deviceInfo -> {
+                String jsonStr = (String) redisTemplate.opsForHash().get(CacheConstants.IOT_DEVICE_LAST_DATA, deviceInfo.getIotId());
+                if(StringUtils.isEmpty(jsonStr)){
+                    return;//跳出本次循环，并不是结束方法
+                }
+                deviceInfo.setDeviceDataVos(JSONUtil.toList(jsonStr, DeviceData.class));
+            });
+            //遍历的是床位数据
+            roomVo.getBedVoList().forEach(bedVo -> {
+                //获取床位对应的设备列表
+                bedVo.getDeviceVos().forEach(deviceInfo -> {
+                    String jsonStr = (String) redisTemplate.opsForHash().get(CacheConstants.IOT_DEVICE_LAST_DATA, deviceInfo.getIotId());
+                    if(StringUtils.isEmpty(jsonStr)){
+                        return;//跳出本次循环，并不是结束方法
+                    }
+                    deviceInfo.setDeviceDataVos(JSONUtil.toList(jsonStr, DeviceData.class));
+                });
+            });
+        });
+        return roomVos;
     }
 }

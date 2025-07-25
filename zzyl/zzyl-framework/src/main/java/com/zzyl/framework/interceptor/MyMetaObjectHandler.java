@@ -20,11 +20,15 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
 
     @SneakyThrows
     public boolean isExclude() {
-        String requestURI = request.getRequestURI();
-        if(requestURI.startsWith("/member")){
+        try {
+            String requestURI = request.getRequestURI();
+            if(requestURI.startsWith("/member")){
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
             return false;
         }
-        return true;
     }
 
 

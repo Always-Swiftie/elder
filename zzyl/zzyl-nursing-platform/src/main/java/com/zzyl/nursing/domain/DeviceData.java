@@ -1,19 +1,20 @@
 package com.zzyl.nursing.domain;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import com.zzyl.common.annotation.Excel;
 import com.zzyl.common.core.domain.BaseEntity;
-import lombok.NoArgsConstructor;
 
 /**
  * 设备数据对象 device_data
  * 
  * @author ruoyi
- * @date 2024-09-22
+ * @date 2025-07-25
  */
 @Data
 @AllArgsConstructor
@@ -74,7 +75,5 @@ public class DeviceData extends BaseEntity
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Excel(name = "数据上报时间", width = 30, dateFormat = "yyyy-MM-dd")
     private LocalDateTime alarmTime;
-
-
 
 }

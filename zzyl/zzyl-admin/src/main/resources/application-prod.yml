@@ -223,5 +223,5 @@ huaweicloud:
   #amqp相关配置 第二天课程接收设备数据使用
   host: 81fa235c86.st1.iotda-app.cn-south-1.myhuaweicloud.com
   accessKey: sj8vhgxj
-  accessCode: 3eD7OnAlVxgYtMZKN1DiKytGvoBYQyr4
+  accessCode: NzvlWuQwA2sjmuhnUkpW0UJ7hqxvkiM6
   queueName: DefaultQueue   #默认无需改动

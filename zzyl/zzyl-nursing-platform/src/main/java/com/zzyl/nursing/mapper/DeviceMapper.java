@@ -12,7 +12,6 @@ import com.zzyl.nursing.domain.Device;
  * @date 2025-07-24
  */
 @Mapper
-
 public interface DeviceMapper extends BaseMapper<Device>
 {
     /**

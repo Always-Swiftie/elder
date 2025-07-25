@@ -8,10 +8,17 @@ import java.util.List;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zzyl.common.constant.HttpStatus;
+import com.zzyl.common.core.page.TableDataInfo;
 import com.zzyl.common.utils.DateUtils;
+import com.zzyl.common.utils.StringUtils;
 import com.zzyl.nursing.Iot.IotMsgNotifyData;
 import com.zzyl.nursing.domain.Device;
+import com.zzyl.nursing.dto.DeviceDataPageReqDto;
 import com.zzyl.nursing.mapper.DeviceMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +28,8 @@ import com.zzyl.nursing.domain.DeviceData;
 import com.zzyl.nursing.service.IDeviceDataService;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -54,14 +63,49 @@ public class DeviceDataServiceImpl extends ServiceImpl<DeviceDataMapper, DeviceD
 
     /**
      * 查询设备数据列表
-     * 
-     * @param deviceData 设备数据
+     *
+     * @param dto 设备数据
      * @return 设备数据
      */
     @Override
-    public List<DeviceData> selectDeviceDataList(DeviceData deviceData)
-    {
-        return deviceDataMapper.selectDeviceDataList(deviceData);
+    public TableDataInfo selectDeviceDataList(DeviceDataPageReqDto dto){
+
+        LambdaQueryWrapper<DeviceData> lambdaQueryWrapper =  new LambdaQueryWrapper<>();
+        Page<DeviceData> page = new Page(dto.getPageNum(),dto.getPageSize());
+        //模糊查询设备名称
+        if(StringUtils.isNotEmpty(dto.getDeviceName())){
+            lambdaQueryWrapper.eq(DeviceData::getDeviceName,dto.getDeviceName());
+        }
+        //精确查询功能名称
+        if (StringUtils.isNotEmpty(dto.getFunctionId())) {
+            lambdaQueryWrapper.eq(DeviceData::getFunctionId, dto.getFunctionId());
+        }
+        //时间范围查询
+        if(ObjectUtils.isNotEmpty(dto.getStartTime()) && ObjectUtils.isNotEmpty(dto.getEndTime())){
+            lambdaQueryWrapper.between(DeviceData::getAlarmTime,dto.getStartTime(),dto.getEndTime());
+        }
+
+        //分页查询
+        page = page(page,lambdaQueryWrapper);
+
+        //封装分页对象
+        return getTableDataInfo(page);
+
+    }
+
+    /**
+     * 封装分页对象
+     * @param page
+     * @return
+     */
+    @NotNull
+    private static TableDataInfo getTableDataInfo(Page<DeviceData> page) {
+        TableDataInfo tableData = new TableDataInfo();
+        tableData.setCode(HttpStatus.SUCCESS);
+        tableData.setMsg("查询成功");
+        tableData.setRows(page.getRecords());
+        tableData.setTotal(page.getTotal());
+        return tableData;
     }
 
     /**

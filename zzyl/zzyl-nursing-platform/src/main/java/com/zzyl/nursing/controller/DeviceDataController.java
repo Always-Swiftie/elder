@@ -1,5 +1,6 @@
 package com.zzyl.nursing.controller;
 
+import com.zzyl.nursing.dto.DeviceDataPageReqDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -44,26 +45,24 @@ public class DeviceDataController extends BaseController
     @PreAuthorize("@ss.hasPermi('nursing:data:list')")
     @GetMapping("/list")
     @ApiOperation("查询设备数据列表")
-    public TableDataInfo list(DeviceData deviceData)
+    public TableDataInfo list(DeviceDataPageReqDto deviceDataPageReqDto)
     {
-        startPage();
-        List<DeviceData> list = deviceDataService.selectDeviceDataList(deviceData);
-        return getDataTable(list);
+        return deviceDataService.selectDeviceDataList(deviceDataPageReqDto);
     }
 
-    /**
-     * 导出设备数据列表
-     */
-    @PreAuthorize("@ss.hasPermi('nursing:data:export')")
-    @Log(title = "设备数据", businessType = BusinessType.EXPORT)
-    @PostMapping("/export")
-    @ApiOperation("导出设备数据列表")
-    public void export(HttpServletResponse response, DeviceData deviceData)
-    {
-        List<DeviceData> list = deviceDataService.selectDeviceDataList(deviceData);
-        ExcelUtil<DeviceData> util = new ExcelUtil<DeviceData>(DeviceData.class);
-        util.exportExcel(response, list, "设备数据数据");
-    }
+//    /**
+//     * 导出设备数据列表
+//     */
+//    @PreAuthorize("@ss.hasPermi('nursing:data:export')")
+//    @Log(title = "设备数据", businessType = BusinessType.EXPORT)
+//    @PostMapping("/export")
+//    @ApiOperation("导出设备数据列表")
+//    public void export(HttpServletResponse response, DeviceData deviceData)
+//    {
+//        List<DeviceData> list = deviceDataService.selectDeviceDataList(deviceData);
+//        ExcelUtil<DeviceData> util = new ExcelUtil<DeviceData>(DeviceData.class);
+//        util.exportExcel(response, list, "设备数据数据");
+//    }
 
     /**
      * 获取设备数据详细信息

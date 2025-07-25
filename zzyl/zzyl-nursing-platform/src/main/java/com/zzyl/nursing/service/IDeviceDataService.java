@@ -3,8 +3,10 @@ package com.zzyl.nursing.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 
+import com.zzyl.common.core.page.TableDataInfo;
 import com.zzyl.nursing.Iot.IotMsgNotifyData;
 import com.zzyl.nursing.domain.DeviceData;
+import com.zzyl.nursing.dto.DeviceDataPageReqDto;
 
 /**
  * 设备数据Service接口
@@ -24,11 +26,11 @@ public interface IDeviceDataService extends IService<DeviceData>
 
     /**
      * 查询设备数据列表
-     * 
-     * @param deviceData 设备数据
+     *
+     * @param deviceDataPageReqDto 设备数据
      * @return 设备数据集合
      */
-    public List<DeviceData> selectDeviceDataList(DeviceData deviceData);
+    public TableDataInfo selectDeviceDataList(DeviceDataPageReqDto deviceDataPageReqDto);
 
     /**
      * 新增设备数据

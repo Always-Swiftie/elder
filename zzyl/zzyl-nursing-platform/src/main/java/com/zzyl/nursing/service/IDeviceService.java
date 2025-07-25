@@ -96,4 +96,10 @@ public interface IDeviceService extends IService<Device>
      * @return
      */
     AjaxResult queryServiceProperties(String iotId);
+
+    /**
+     * 删除设备
+     * @param iotId
+     */
+    void deleteDevice(String iotId);
 }

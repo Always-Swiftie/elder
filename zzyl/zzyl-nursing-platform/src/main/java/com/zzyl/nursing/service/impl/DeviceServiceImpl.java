@@ -63,6 +63,8 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     @Autowired
     private ThemeResolver themeResolver;
 
+    private final String InstanceId = "13bc6d99-b449-4fc5-b229-1f72143a7881";
+
     /**
      * 查询Device
      * 
@@ -116,7 +118,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         BeanUtil.copyProperties(deviceDto, body);
 
         updateDeviceRequest.setDeviceId(device.getIotId());
-        updateDeviceRequest.setInstanceId("13bc6d99-b449-4fc5-b229-1f72143a7881");
+        updateDeviceRequest.setInstanceId(InstanceId);
 
         body.setDescription(device.getDeviceDescription());
         updateDeviceRequest.setBody(body);
@@ -395,6 +397,25 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         });
 
         return AjaxResult.success(list);
+    }
 
+    /**
+     * 删除设备
+     * @param iotId
+     */
+    @Override
+    public void deleteDevice(String iotId) {
+        DeleteDeviceRequest request = new DeleteDeviceRequest();
+        request.setDeviceId(iotId);
+        request.setInstanceId(InstanceId);
+
+        DeleteDeviceResponse response;
+        try {
+            response = ioTDAClient.deleteDevice(request);
+            deviceMapper.delete(Wrappers.<Device>lambdaQuery().eq(Device::getIotId, iotId));
+        }catch (Exception e){
+            log.info("删除失败:{}", e.getMessage());
+            throw new BaseException("删除失败!");
+        }
     }
 }

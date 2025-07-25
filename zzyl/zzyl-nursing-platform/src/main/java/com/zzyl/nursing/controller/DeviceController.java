@@ -111,6 +111,17 @@ public class DeviceController extends BaseController
         return success();
     }
 
+    /**
+     * 删除设备
+     */
+    @DeleteMapping
+    @ApiOperation(value = "删除设备")
+    public AjaxResult deleteDevice(@RequestBody DeviceInfoQueryDto  deviceInfoQueryDto) {
+        String iotId = deviceInfoQueryDto.getIotId();
+        deviceService.deleteDevice(iotId);
+        return success();
+    }
+
 
 
 

@@ -9,9 +9,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -21,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huaweicloud.sdk.iotda.v5.IoTDAClient;
 import com.huaweicloud.sdk.iotda.v5.model.*;
 import com.zzyl.common.constant.CacheConstants;
+import com.zzyl.common.core.domain.AjaxResult;
 import com.zzyl.common.exception.base.BaseException;
 import com.zzyl.common.utils.DateUtils;
 import com.zzyl.common.utils.StringUtils;
@@ -100,14 +103,26 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     /**
      * 修改Device
      * 
-     * @param device Device
+     * @param
      * @return 结果
      */
     @Override
-    public int updateDevice(Device device)
+    public int updateDevice(DeviceDto deviceDto)
     {
+        Device device = new Device();
+        BeanUtil.copyProperties(deviceDto, device);
+        UpdateDeviceRequest updateDeviceRequest = new UpdateDeviceRequest();
+        UpdateDevice body = new UpdateDevice();
+        BeanUtil.copyProperties(deviceDto, body);
 
-        return updateById(device) == true ? 1 : 0;
+        updateDeviceRequest.setDeviceId(device.getIotId());
+        updateDeviceRequest.setInstanceId("13bc6d99-b449-4fc5-b229-1f72143a7881");
+
+        body.setDescription(device.getDeviceDescription());
+        updateDeviceRequest.setBody(body);
+
+        ioTDAClient.updateDevice(updateDeviceRequest);
+        return deviceMapper.updateDevice(device);
     }
 
     /**
@@ -339,4 +354,47 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         return deviceVo;
     }
 
+    /**
+     * 查询设备上报数据
+     *
+     * @param iotId
+     * @return
+     */
+    @Override
+    public AjaxResult queryServiceProperties(String iotId) {
+
+        ShowDeviceShadowRequest request = new ShowDeviceShadowRequest();
+        request.setDeviceId(iotId);
+        ShowDeviceShadowResponse response = ioTDAClient.showDeviceShadow(request);
+        if (response.getHttpStatusCode() != 200) {
+            throw new BaseException("物联网接口 - 查询设备上报数据，调用失败");
+        }
+        List<DeviceShadowData> shadow = response.getShadow();
+        if(CollUtil.isEmpty(shadow)){
+            List<Object> emptyList = Collections.emptyList();
+            return AjaxResult.success(emptyList);
+        }
+        //返回数据
+        JSONObject jsonObject = JSONUtil.parseObj(shadow.get(0).getReported().getProperties());
+
+        List<Map<String,Object>> list = new ArrayList<>();
+
+        //处理上报时间日期
+        LocalDateTime activeTime =  LocalDateTimeUtil.parse(shadow.get(0).getReported().getEventTime(), "yyyyMMdd'T'HHmmss'Z'");
+        //日期时区转换
+        LocalDateTime eventTime = activeTime.atZone(ZoneId.from(ZoneOffset.UTC))
+                .withZoneSameInstant(ZoneId.of("Asia/Shanghai"))
+                .toLocalDateTime();
+
+        jsonObject.forEach((k,v)->{
+            Map<String,Object> map = new HashMap<>();
+            map.put("functionId",k);
+            map.put("value",v);
+            map.put("eventTime",eventTime);
+            list.add(map);
+        });
+
+        return AjaxResult.success(list);
+
+    }
 }

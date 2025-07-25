@@ -1,5 +1,6 @@
 package com.zzyl.nursing.controller;
 
+import com.zzyl.nursing.dto.DeviceDataDto;
 import com.zzyl.nursing.dto.DeviceDto;
 import com.zzyl.nursing.dto.DeviceInfoQueryDto;
 import com.zzyl.nursing.vo.DeviceInfo;
@@ -9,14 +10,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.zzyl.common.annotation.Log;
 import com.zzyl.common.core.controller.BaseController;
 import com.zzyl.common.core.domain.AjaxResult;
@@ -95,6 +89,28 @@ public class DeviceController extends BaseController
         String iotId = deviceInfoQueryDto.getIotId();
         return success(deviceService.queryDeviceDetail(iotId));
     }
+
+    /**
+     * 查询设备上报数据
+     */
+    @PostMapping("/queryThingModelPublished")
+    @ApiOperation("查询设备上报数据")
+    public AjaxResult queryServiceProperties(@RequestBody DeviceDataDto dto) {
+        String iotId = dto.getIotId();
+        AjaxResult ajaxResult = deviceService.queryServiceProperties(iotId);
+        return ajaxResult;
+    }
+
+    /**
+     * 修改设备
+     */
+    @PutMapping
+    @ApiOperation(value = "修改设备")
+    public AjaxResult updateDevice(@RequestBody DeviceDto deviceDto){
+        deviceService.updateDevice(deviceDto);
+        return success();
+    }
+
 
 
 

@@ -2,6 +2,8 @@ package com.zzyl.nursing.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
+
+import com.zzyl.common.core.domain.AjaxResult;
 import com.zzyl.nursing.domain.Device;
 import com.zzyl.nursing.dto.DeviceDto;
 import com.zzyl.nursing.vo.DeviceDetailVo;
@@ -43,10 +45,10 @@ public interface IDeviceService extends IService<Device>
     /**
      * 修改Device
      * 
-     * @param device Device
+     * @param
      * @return 结果
      */
-    public int updateDevice(Device device);
+    public int updateDevice(DeviceDto deviceDto);
 
     /**
      * 批量删除Device
@@ -87,4 +89,11 @@ public interface IDeviceService extends IService<Device>
      * @return
      */
     DeviceDetailVo queryDeviceDetail(String iotId);
+
+    /**
+     * 查询设备上报数据
+     * @param iotId
+     * @return
+     */
+    AjaxResult queryServiceProperties(String iotId);
 }

@@ -122,6 +122,15 @@ public class DeviceController extends BaseController
         return success();
     }
 
+    @GetMapping("/queryProduct/{productKey}")
+    @ApiOperation(value = "查询产品详情")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "productKey", value = "产品id", required = true, dataTypeClass = String.class)
+    })
+    public AjaxResult queryProduct(@PathVariable String productKey){
+        return deviceService.queryProduct(productKey);
+    }
+
 
 
 

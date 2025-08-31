@@ -44,7 +44,7 @@ pipeline {
                     script {
                         for (ds in services.tokenize(",")) {
                             echo "进入target目录执行镜像打包......"
-                            sh "cd ./target/ && docker build -t ${ds}:${DOCKER_TAG} -f ../Dockerfile ."
+                            sh "docker build -t ${ds}:${DOCKER_TAG} -f Dockerfile ."
                         }
                     }
                 }
